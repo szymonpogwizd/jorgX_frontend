@@ -1,0 +1,75 @@
+header{
+    height: 15%;
+    width: auto;
+    text-align: center;
+}
+
+header .header-image{
+    max-width: 10%;
+    margin-bottom: 2%;
+}
+
+#textinput{
+    border: 1px solid black;
+    width: 50%;
+    text-align: center;
+    margin-left: 25%;
+    margin-right: 25%;
+    border-radius: 100px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1%;
+    height: 50px;
+    font-size: 50px;
+}
+
+.checkbox-label{
+    margin-right: 10px;
+    font-size: 30px;
+}
+
+.checkbox-label input[type="checkbox"] {
+    appearance: none; 
+    -webkit-appearance: none; 
+    -moz-appearance: none; 
+    outline: none; 
+    border: none; 
+    width: 30px;
+    height: 30px;
+    margin-top: 5px;
+    margin-right: 10px; 
+    vertical-align: middle; 
+    background-color: rgb(211,211,211);
+  }
+
+.checkbox-label input[type="checkbox"]:checked::before {
+    content: "✔";
+    font-size: 30px;
+    text-align: center;
+}
+
+.input-container{
+    margin-bottom: 2%;
+}
+
+nav{
+    text-align: center;
+}
+.button{
+    text-align: center;
+    margin-right: 20px;
+    border: 1px solid black;
+    background-color: white;
+    border-radius: 50px;
+    width: 20%;
+    height: 70px;
+    font-size: 50px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+#reset:hover{
+    background-color: rgb(228, 96, 94);
+}
+
+#submit:hover{
+    background-color: rgb(159, 255, 157);
+}
