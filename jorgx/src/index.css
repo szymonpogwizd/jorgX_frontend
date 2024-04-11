@@ -25,6 +25,10 @@ header .header-image{
 .checkbox-label{
     margin-right: 10px;
     font-size: 30px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
 }
 
 .checkbox-label input[type="checkbox"] {
@@ -41,10 +45,9 @@ header .header-image{
     background-color: rgb(211,211,211);
   }
 
-.checkbox-label input[type="checkbox"]:checked::before {
-    content: "✔";
-    font-size: 30px;
+.checkbox-label .form-check{
     text-align: center;
+    margin-right: 20px;
 }
 
 .input-container{
@@ -72,4 +75,37 @@ nav{
 
 #submit:hover{
     background-color: rgb(159, 255, 157);
+}
+
+@media (max-width: 800px) {
+    .button {
+      font-size: 1.1rem;
+    }
+  }
+
+@media (min-width: 800px) {
+    .button {
+      font-size: 2rem; /* Dostosuj rozmiar tekstu na większych ekranach */
+    }
+  }
+
+aside{
+    text-align: center;
+}
+
+.max{
+    max-height: 500px;
+    width: 100%;
+    overflow-y: auto;
+    border: 0.1px solid black;
+    border-radius: 40px;
+    box-shadow: 30 100px 200px rgba(0, 0, 0, 0.1);
+}
+.row{
+    display: flex;
+    align-items: stretch;
+}
+
+aside h1{
+    font-size: 50px;
 }
