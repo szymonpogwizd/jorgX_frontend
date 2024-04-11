@@ -1,105 +1,97 @@
 import React, { useState } from 'react';
 import Header from './Header';
+import Nav from './Nav';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Link } from "react-router-dom";
+
+import zle from "./assets/zle.jpg";
+import dobre from "./assets/dobre.png";
 
 function App() {
-  const [textInput, setTextInput] = useState('');
-  const [option1Checked, setOption1Checked] = useState(false);
-  const [option2Checked, setOption2Checked] = useState(false);
-  const [option3Checked, setOption3Checked] = useState(false);
-  const [isValid, setIsValid] = useState(true);
+  const [message, setMessage] = useState('');
+  const [formDataDisplay, setFormDataDisplay] = useState(null);
 
-  const handleInputChange = (event) => {
-    const value = event.target.value;
-    const pattern = /^[a-zA-Z0-9\s\-]+$/;
-    const isValidLength = value.length >= 3 && value.length <= 32;
-    const isValidInput = pattern.test(value) && isValidLength;
+  const handleFormSubmit = (formData) => {
+    setFormDataDisplay(formData);
+};
 
-    setTextInput(value);
-    setIsValid(isValidInput);
-  };
-
-  const handleCheckboxChange = (event) => {
-    const { name, checked } = event.target;
-    switch (name) {
-      case 'option1':
-        setOption1Checked(checked);
-        break;
-      case 'option2':
-        setOption2Checked(checked);
-        break;
-      case 'option3':
-        setOption3Checked(checked);
-        break;
-      default:
-        break;
-    }
-  };
-
-  const handleReset = () => {
-    setTextInput('');
-    setOption1Checked(false);
-    setOption2Checked(false);
-    setOption3Checked(false);
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const isAtLeastOneCheckboxChecked = option1Checked || option2Checked || option3Checked;
-    if (isValid && isAtLeastOneCheckboxChecked) {
-      alert("Udało się !!!")
-    } else {
-      alert('Wprowadź nazwę z 3 do 32 znaków, bez znaków specjalnych, i zaznacz przynajmniej jeden checkbox!');
-    }
-  };
+const handleClick = () => {
+  setMessage('Udało się!');
+};
 
   return (
     <div>
       <Header />
-      <section>
-        <nav>
-          <form onSubmit={handleSubmit}>
-            <div className="input-container">
-              <input
-                type="text"
-                className={`textinput ${isValid ? '' : 'invalid'}`}
-                id='textinput'
-                value={textInput}
-                onChange={handleInputChange}
-                placeholder="Wpisz nazwę / miejscowość / adres"
-              />
-            <label className='checkbox-label'>
-              <input
-                type="checkbox"
-                name="option1"
-                checked={option1Checked}
-                onChange={handleCheckboxChange}
-              />
-              Wyszukaj po mieście
-            </label>
-            <label className='checkbox-label'>
-              <input
-                type="checkbox"
-                name="option2"
-                checked={option2Checked}
-                onChange={handleCheckboxChange}
-              />
-              Wyszukaj po adresie
-            </label>
-            <label className='checkbox-label'>
-              <input
-                type="checkbox"
-                name="option3"
-                checked={option3Checked}
-                onChange={handleCheckboxChange}
-              />
-              Wyszukaj po nazwie
-            </label>
+      <Nav handleFormSubmit={handleFormSubmit}/>
+        {formDataDisplay && (
+          <div className="max">
+          <div className="row">
+            <div className="col-lg-6">
+              <aside>
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='300' viewBox='0 0 500 300'%3E%3C/svg%3E" alt="Placeholder" />
+                <h1>{formDataDisplay?.textInput}</h1>
+                <p>
+                  Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                  Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
+                  when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+                  It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
+                  It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                </p>
+                <h2>Ocena na podstwie opinii</h2>
+                <img src={zle} alt="Placeholder" id='opinia'/>
+              </aside>
             </div>
-            <button className='button' id='reset' type="button" onClick={handleReset}>Resetuj</button>
-            <button className='button' id='submit' type="submit">Wyszukaj</button>
-          </form>
-        </nav>
-      </section>
+            <div className="col-lg-6">
+              <div className='wynik row'>
+                <div className="col-lg-3 kafel">
+                  <Link to='/miejsce' className='no-decoration'>
+                  <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3C/svg%3E" alt="Placeholder" />
+                  <h3 className='no-decoration'>Co tu się dzieje</h3>
+                  <p className='no-decoration'>Treść pierwszego obiektu</p>
+                  <img src={zle} alt="Placeholder" />
+                  </Link>
+                </div>
+                <div className="col-lg-3 kafel">
+                  <Link to='/miejsce' className='no-decoration'>
+                  <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3C/svg%3E" alt="Placeholder" />
+                  <h3 className='no-decoration'>Co tu się dzieje</h3>
+                  <p className='no-decoration'>Treść pierwszego obiektu</p>
+                  <img src={zle} alt="Placeholder" />
+                  </Link>
+                </div>
+                <div className="col-lg-3 kafel">
+                  <Link to='/miejsce' className='no-decoration'>
+                  <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3C/svg%3E" alt="Placeholder" />
+                  <h3 className='no-decoration'>Co tu się dzieje</h3>
+                  <p className='no-decoration'>Treść pierwszego obiektu</p>
+                  <img src={zle} alt="Placeholder" />
+                  </Link>
+                </div>
+                <div className="col-lg-3 kafel">
+                  <Link to='/miejsce' className='no-decoration'>
+                  <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3C/svg%3E" alt="Placeholder" />
+                  <h3 className='no-decoration'>Co tu się dzieje</h3>
+                  <p className='no-decoration'>Treść pierwszego obiektu</p>
+                  <img src={zle} alt="Placeholder" />
+                  </Link>
+                </div>
+                <div className="col-lg-3 kafel">
+                  <Link to='/miejsce' className='no-decoration'>
+                  <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3C/svg%3E" alt="Placeholder" />
+                  <h3 className='no-decoration'>Co tu się dzieje</h3>
+                  <p className='no-decoration'>Treść pierwszego obiektu</p>
+                  <img src={zle} alt="Placeholder" />
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        )}
+        <div>
+          {message}
+        </div>
     </div>
   );
 }

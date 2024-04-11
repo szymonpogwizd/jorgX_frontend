@@ -10,21 +10,25 @@ header .header-image{
 }
 
 #textinput{
-    border: 1px solid black;
-    width: 50%;
+    border: 3px solid black;
+    width: 40%;
     text-align: center;
-    margin-left: 25%;
-    margin-right: 25%;
+    margin-left: 30%;
+    margin-right: 30%;
     border-radius: 100px;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
     margin-bottom: 1%;
     height: 50px;
-    font-size: 50px;
+    font-size: 30px;
 }
 
 .checkbox-label{
     margin-right: 10px;
     font-size: 30px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
 }
 
 .checkbox-label input[type="checkbox"] {
@@ -41,10 +45,9 @@ header .header-image{
     background-color: rgb(211,211,211);
   }
 
-.checkbox-label input[type="checkbox"]:checked::before {
-    content: "✔";
-    font-size: 30px;
+.checkbox-label .form-check{
     text-align: center;
+    margin-right: 20px;
 }
 
 .input-container{
@@ -72,4 +75,50 @@ nav{
 
 #submit:hover{
     background-color: rgb(159, 255, 157);
+}
+
+@media (max-width: 800px) {
+    .button {
+      font-size: 1.1rem;
+    }
+  }
+
+@media (min-width: 800px) {
+    .button {
+      font-size: 2rem;
+    }
+  }
+
+aside{
+    text-align: center;
+}
+
+.max{
+    max-height: 800px;
+    width: 100%;
+    overflow-y: auto;
+    border: 0.1px solid black;
+    border-radius: 40px;
+    box-shadow: 30 100px 200px rgba(0, 0, 0, 0.1);
+}
+.row{
+    display: flex;
+    align-items: stretch;
+}
+
+aside h1{
+    font-size: 50px;
+}
+
+.kafel{
+    border-radius: 20px;
+    border: 1px solid black;
+    box-shadow: 30 100px 200px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    cursor: pointer;
+}
+
+.no-decoration{
+    text-decoration: none;
+    color: inherit;
 }
