@@ -2,13 +2,21 @@ import React, { useState } from 'react';
 import Header from './Header';
 import Nav from './Nav';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Link } from "react-router-dom";
+
+import zle from "./assets/zle.jpg";
+import dobre from "./assets/dobre.png";
 
 function App() {
-
+  const [message, setMessage] = useState('');
   const [formDataDisplay, setFormDataDisplay] = useState(null);
 
   const handleFormSubmit = (formData) => {
     setFormDataDisplay(formData);
+};
+
+const handleClick = () => {
+  setMessage('Udało się!');
 };
 
   return (
@@ -30,30 +38,50 @@ function App() {
                   It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
                 </p>
                 <h2>Ocena na podstwie opinii</h2>
-                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3C/svg%3E" alt="Placeholder" />
+                <img src={zle} alt="Placeholder" id='opinia'/>
               </aside>
             </div>
             <div className="col-lg-6">
               <div className='wynik row'>
-                <div className="col-lg-3">
-                  <h1>Co tu się dzieje</h1>
-                  <p>Treść pierwszego obiektu</p>
+                <div className="col-lg-3 kafel">
+                  <Link to='/miejsce' className='no-decoration'>
+                  <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3C/svg%3E" alt="Placeholder" />
+                  <h3 className='no-decoration'>Co tu się dzieje</h3>
+                  <p className='no-decoration'>Treść pierwszego obiektu</p>
+                  <img src={zle} alt="Placeholder" />
+                  </Link>
                 </div>
-                <div className="col-lg-3">
-                  <h1>Co tu się dzieje</h1>
-                  <p>Treść drugiego obiektu</p>
+                <div className="col-lg-3 kafel">
+                  <Link to='/miejsce' className='no-decoration'>
+                  <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3C/svg%3E" alt="Placeholder" />
+                  <h3 className='no-decoration'>Co tu się dzieje</h3>
+                  <p className='no-decoration'>Treść pierwszego obiektu</p>
+                  <img src={zle} alt="Placeholder" />
+                  </Link>
                 </div>
-                <div className="col-lg-3">
-                  <h1>Co tu się dzieje</h1>
-                  <p>Treść trzeciego obiektu</p>
+                <div className="col-lg-3 kafel">
+                  <Link to='/miejsce' className='no-decoration'>
+                  <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3C/svg%3E" alt="Placeholder" />
+                  <h3 className='no-decoration'>Co tu się dzieje</h3>
+                  <p className='no-decoration'>Treść pierwszego obiektu</p>
+                  <img src={zle} alt="Placeholder" />
+                  </Link>
                 </div>
-                <div className="col-lg-3">
-                  <h1>Co tu się dzieje</h1>
-                  <p>Treść czwartego obiektu</p>
+                <div className="col-lg-3 kafel">
+                  <Link to='/miejsce' className='no-decoration'>
+                  <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3C/svg%3E" alt="Placeholder" />
+                  <h3 className='no-decoration'>Co tu się dzieje</h3>
+                  <p className='no-decoration'>Treść pierwszego obiektu</p>
+                  <img src={zle} alt="Placeholder" />
+                  </Link>
                 </div>
-                <div className="col-lg-3">
-                  <h1>Co tu się dzieje</h1>
-                  <p>Treść czwartego obiektu</p>
+                <div className="col-lg-3 kafel">
+                  <Link to='/miejsce' className='no-decoration'>
+                  <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3C/svg%3E" alt="Placeholder" />
+                  <h3 className='no-decoration'>Co tu się dzieje</h3>
+                  <p className='no-decoration'>Treść pierwszego obiektu</p>
+                  <img src={zle} alt="Placeholder" />
+                  </Link>
                 </div>
               </div>
             </div>
@@ -61,6 +89,9 @@ function App() {
         </div>
         
         )}
+        <div>
+          {message}
+        </div>
     </div>
   );
 }
