@@ -3,8 +3,7 @@ import Header from './Header';
 import Nav from './Nav';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from "react-router-dom";
-
-import zle from "./assets/zle.jpg";
+import zle from "./assets/zle.png";
 import dobre from "./assets/dobre.png";
 
 function App() {
@@ -44,7 +43,7 @@ const handleClick = () => {
             <div className="col-lg-6">
               <div className='wynik row'>
                 <div className="col-lg-3 kafel">
-                  <Link to='/miejsce' className='no-decoration'>
+                  <Link to='/Place' className='no-decoration'>
                   <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3C/svg%3E" alt="Placeholder" />
                   <h3 className='no-decoration'>Co tu się dzieje</h3>
                   <p className='no-decoration'>Treść pierwszego obiektu</p>
@@ -52,7 +51,7 @@ const handleClick = () => {
                   </Link>
                 </div>
                 <div className="col-lg-3 kafel">
-                  <Link to='/miejsce' className='no-decoration'>
+                  <Link to='/Place' className='no-decoration'>
                   <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3C/svg%3E" alt="Placeholder" />
                   <h3 className='no-decoration'>Co tu się dzieje</h3>
                   <p className='no-decoration'>Treść pierwszego obiektu</p>
@@ -60,7 +59,15 @@ const handleClick = () => {
                   </Link>
                 </div>
                 <div className="col-lg-3 kafel">
-                  <Link to='/miejsce' className='no-decoration'>
+                  <Link to='/Place' className='no-decoration'>
+                  <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3C/svg%3E" alt="Placeholder" />
+                  <h3 className='no-decoration'>Co tu się dzieje</h3>
+                  <p className='no-decoration'>Treść pierwszego obiektu</p>
+                  <img src={dobre} alt="Placeholder" />
+                  </Link>
+                </div>
+                <div className="col-lg-3 kafel">
+                  <Link to='/Place' className='no-decoration'>
                   <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3C/svg%3E" alt="Placeholder" />
                   <h3 className='no-decoration'>Co tu się dzieje</h3>
                   <p className='no-decoration'>Treść pierwszego obiektu</p>
@@ -68,15 +75,7 @@ const handleClick = () => {
                   </Link>
                 </div>
                 <div className="col-lg-3 kafel">
-                  <Link to='/miejsce' className='no-decoration'>
-                  <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3C/svg%3E" alt="Placeholder" />
-                  <h3 className='no-decoration'>Co tu się dzieje</h3>
-                  <p className='no-decoration'>Treść pierwszego obiektu</p>
-                  <img src={zle} alt="Placeholder" />
-                  </Link>
-                </div>
-                <div className="col-lg-3 kafel">
-                  <Link to='/miejsce' className='no-decoration'>
+                  <Link to='/Place' className='no-decoration'>
                   <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3C/svg%3E" alt="Placeholder" />
                   <h3 className='no-decoration'>Co tu się dzieje</h3>
                   <p className='no-decoration'>Treść pierwszego obiektu</p>

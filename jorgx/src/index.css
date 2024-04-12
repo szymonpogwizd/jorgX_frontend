@@ -122,3 +122,10 @@ aside h1{
     text-decoration: none;
     color: inherit;
 }
+
+.lista{
+    border: 1px solid #000000; 
+    border-radius: 5px; 
+    padding: 10px; 
+    margin-bottom: 10px;
+}
