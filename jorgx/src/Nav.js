@@ -8,7 +8,7 @@ function Nav({ handleFormSubmit }) {
     const [option1Checked, setOption1Checked] = useState(false);
     const [option2Checked, setOption2Checked] = useState(false);
     const [option3Checked, setOption3Checked] = useState(false);
-    const [isValid, setIsValid] = useState(true);
+    const [isValid, setIsValid] = useState(false);
   
     const handleInputChange = (event) => {
       const value = event.target.value;

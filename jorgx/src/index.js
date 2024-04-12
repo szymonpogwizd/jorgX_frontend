@@ -7,7 +7,7 @@ import {
   RouterProvider,
   Route,
 } from "react-router-dom";
-import Miejsce from './pages/miejsce';
+import Place from './pages/Place';
 
 
 const router = createBrowserRouter([
@@ -16,8 +16,8 @@ const router = createBrowserRouter([
     element: <App/>,
   },
   {
-    path: "miejsce",
-    element: <Miejsce/>,
+    path: "Place",
+    element: <Place/>,
   },
 ]);
 
