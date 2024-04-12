@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import { useNavigate } from 'react-router-dom';
+
 
 function Nav({ handleFormSubmit }) {
 
+    const navigate = useNavigate();
     const [textInput, setTextInput] = useState('');
     const [option1Checked, setOption1Checked] = useState(false);
     const [option2Checked, setOption2Checked] = useState(false);
@@ -38,7 +41,8 @@ function Nav({ handleFormSubmit }) {
     };
   
     const handleReset = () => {
-      setTextInput('');
+      setTextInput("");
+      setIsValid(false);
       setOption1Checked(false);
       setOption2Checked(false);
       setOption3Checked(false);
@@ -54,6 +58,7 @@ function Nav({ handleFormSubmit }) {
           option2Checked,
           option3Checked
         });
+        navigate(`/?textInput=${textInput}&option1Checked=${option1Checked}&option2Checked=${option2Checked}&option3Checked=${option3Checked}`);
       } else {
         alert('Wprowadź nazwę z 3 do 32 znaków, bez znaków specjalnych, i zaznacz przynajmniej jeden checkbox!');
       }
@@ -61,7 +66,7 @@ function Nav({ handleFormSubmit }) {
 
     return (
         <nav>
-        <Form onSubmit={handleSubmit}>
+        <Form onSubmit={handleSubmit} method='POST'>
         <div className="input-container">
           <Form.Group controlId="formBasicText">
             <Form.Control
