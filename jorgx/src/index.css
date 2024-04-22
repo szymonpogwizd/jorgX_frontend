@@ -100,6 +100,7 @@ aside{
     border: 0.1px solid black;
     border-radius: 40px;
     box-shadow: 30 100px 200px rgba(0, 0, 0, 0.1);
+    margin-bottom: 50px;
 }
 .row{
     display: flex;
@@ -111,9 +112,9 @@ aside h1{
 }
 
 .kafel{
-    border-radius: 20px;
-    border: 1px solid black;
-    box-shadow: 30 100px 200px rgba(0, 0, 0, 0.1);
+    border-radius: 5px; 
+    padding: 10px; 
+    margin-bottom: 10px;
     text-align: center;
     cursor: pointer;
 }
@@ -127,5 +128,22 @@ aside h1{
     border: 1px solid #000000; 
     border-radius: 5px; 
     padding: 10px; 
+    margin-bottom: 10px;
+}
+
+.kontener{
+    height: 400px;
+}
+.form-opinia{
+    background-color: lightgray;
+    border: 1px solid black;
+    border-radius: 30px;
+}
+
+#napis-opini{
+    text-align: center;
+}
+.form-opinia div{
+    text-align: center;
     margin-bottom: 10px;
 }
