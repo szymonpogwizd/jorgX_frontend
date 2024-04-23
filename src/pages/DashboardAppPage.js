@@ -15,9 +15,9 @@ import {
 
 export default function DashboardAppPage() {
   const theme = useTheme();
-  const [numSongs, setNumSongs] = useState(0);
-  const [numPlaylists, setNumPlaylists] = useState(0);
-  const [numGroups, setNumGroups] = useState(0);
+  const [numOpinions, setNumOpinions] = useState(0);
+  const [numPlaces, setNumPlaces] = useState(0);
+  const [numCities, setNumCities] = useState(0);
   const [numUsers, setNumUsers] = useState(0);
 
   const headers = {
@@ -33,19 +33,19 @@ export default function DashboardAppPage() {
   useEffect(() => {
     fetch("http://localhost:8080/dashboard/app/opinions", { headers })
       .then((response) => response.json())
-      .then((data) => setNumSongs(data || "0"));
+      .then((data) => setNumOpinions(data || "0"));
   }, []);
 
   useEffect(() => {
     fetch("http://localhost:8080/dashboard/app/places", { headers })
       .then((response) => response.json())
-      .then((data) => setNumPlaylists(data || "0"));
+      .then((data) => setNumPlaces(data || "0"));
   }, []);
 
   useEffect(() => {
     fetch("http://localhost:8080/dashboard/app/cities", { headers })
       .then((response) => response.json())
-      .then((data) => setNumGroups(data || "0"));
+      .then((data) => setNumCities(data || "0"));
   }, []);
 
   return (
@@ -61,15 +61,15 @@ export default function DashboardAppPage() {
 
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Opinie" total={numSongs} icon={'ant-design:play-circle-outlined'} />
+            <AppWidgetSummary title="Opinie" total={numOpinions} icon={'ant-design:play-circle-outlined'} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Restauracje" total={numPlaylists} color="info" icon={'ant-design:play-square-outlined'} />
+            <AppWidgetSummary title="Lokale" total={numPlaces} color="info" icon={'ant-design:play-square-outlined'} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Miasta" total={numGroups} color="error" icon={'ant-design:group-outlined'} />
+            <AppWidgetSummary title="Miasta" total={numCities} color="error" icon={'ant-design:group-outlined'} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>

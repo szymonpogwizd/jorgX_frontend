@@ -8,6 +8,7 @@ import Page404 from './pages/Page404';
 import Page403 from './pages/Page403';
 import DashboardAppPage from './pages/DashboardAppPage';
 import Users from './pages/Users';
+import Search from './pages/Search';
 import Contact from './pages/Contact'
 
 import ProtectedRoute from './route/ProtectedRoute';
@@ -23,7 +24,8 @@ export default function Router() {
         { element: <Navigate to="/dashboard/app" />, index: true },
         { path: 'app', element: <ProtectedRoute><DashboardAppPage /></ProtectedRoute> },
         { path: 'users', element: <AdminRoute><Users /></AdminRoute> },
-        { path: 'contact', element: <ProtectedRoute><Contact /></ProtectedRoute> }
+        { path: 'contact', element: <ProtectedRoute><Contact /></ProtectedRoute> },
+        { path: 'search', element: <ProtectedRoute><Search /></ProtectedRoute> }
       ],
     },
     {

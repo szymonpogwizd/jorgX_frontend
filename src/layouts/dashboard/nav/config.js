@@ -12,6 +12,11 @@ const navConfig = [
     icon: icon('ic_analytics'),
   },
   {
+    title: 'Szukaj',
+    path: '/dashboard/search',
+    icon: icon('chat_bubble_black_24dp')
+  },
+  {
     title: 'Kontakt',
     path: '/dashboard/contact',
     icon: icon('chat_bubble_black_24dp'),
