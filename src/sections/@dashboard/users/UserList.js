@@ -10,18 +10,18 @@ import SelectType from "./SelectType";
 import AlertMessage from '../common/AlertMessage';
 
 export default function UserList({ refreshKey, setNameValue, setIdValue, setIsUpdateMode, setEmailValue, setRoleValue, setActiveValue }) {
-    const [searchText, setSearchText] = useState("");
-    const [data, setData] = useState([]);
-    const [itemToDelete, setItemToDelete] = useState(null);
-    const [showAlert, setShowAlert] = useState(false);
-    const [alertMessage, setAlertMessage] = useState("");
-    const [showSuccessAlert, setShowSuccessAlert] = useState(false);
-    const [successAlertMessage, setSuccessAlertMessage] = useState("");
-    const [userType, setUserType] = useState("");
+  const [searchText, setSearchText] = useState("");
+  const [data, setData] = useState([]);
+  const [itemToDelete, setItemToDelete] = useState(null);
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+  const [successAlertMessage, setSuccessAlertMessage] = useState("");
+  const [userType, setUserType] = useState("");
 
-    const headers = {
-      Authorization: `Bearer ${localStorage.getItem('token')}`
-    };
+  const headers = {
+    Authorization: `Bearer ${localStorage.getItem('token')}`
+  };
 
   useEffect(() => {
     fetch("http://localhost:8080/dashboard/users", { headers })
@@ -43,65 +43,65 @@ export default function UserList({ refreshKey, setNameValue, setIdValue, setIsUp
       });
   }, [itemToDelete, refreshKey]);
 
-    const handleDelete = (id) => () => {
-      const item = data.find((item) => item.id === id);
-      if (!item) {
-        return;
-      }
+  const handleDelete = (id) => () => {
+    const item = data.find((item) => item.id === id);
+    if (!item) {
+      return;
+    }
 
-      fetch(`http://localhost:8080/dashboard/users/${id}`, {
-        method: "DELETE",
-        headers
-      })
-        .then((response) => {
-          if (response.ok) {
-            setItemToDelete(id);
-            setSuccessAlertMessage(`Pomyślnie usunięto kategorię pieśni ${item.name}`);
-            setShowSuccessAlert(true);
-          } else if (response.status === 417) {
-            response.text().then((errorMessage) => {
-              setAlertMessage(errorMessage);
-              setShowAlert(true);
-            });
-          } else {
-            throw new Error("Wystąpił błąd");
-          }
-        })
-        .catch((error) => {
-          setAlertMessage(`${error.message}`);
-          setShowAlert(true);
-        });
-    };
-
-    const handleCloseAlert = () => {
-      setShowAlert(false);
-    };
-
-    const handleCloseSuccessAlert = () => {
-      setShowSuccessAlert(false);
-    };
-
-    const resetAlert = () => {
-      setAlertMessage("");
-    };
-
-    const handleToggle = (id) => () => {
-        const item = data.find((item) => item.id === id);
-        if (item) {
-          setIdValue(item.id);
-          setNameValue(item.name);
-          setEmailValue(item.email);
-          setRoleValue(item.userType);
-          setActiveValue(item.active);
-          setIsUpdateMode(true);
+    fetch(`http://localhost:8080/dashboard/users/${id}`, {
+      method: "DELETE",
+      headers
+    })
+      .then((response) => {
+        if (response.ok) {
+          setItemToDelete(id);
+          setSuccessAlertMessage(`Pomyślnie usunięto użytkownika ${item.name}`);
+          setShowSuccessAlert(true);
+        } else if (response.status === 417) {
+          response.text().then((errorMessage) => {
+            setAlertMessage(errorMessage);
+            setShowAlert(true);
+          });
+        } else {
+          throw new Error("Wystąpił błąd");
         }
-    };
+      })
+      .catch((error) => {
+        setAlertMessage(`${error.message}`);
+        setShowAlert(true);
+      });
+  };
+
+  const handleCloseAlert = () => {
+    setShowAlert(false);
+  };
+
+  const handleCloseSuccessAlert = () => {
+    setShowSuccessAlert(false);
+  };
+
+  const resetAlert = () => {
+    setAlertMessage("");
+  };
+
+  const handleToggle = (id) => () => {
+    const item = data.find((item) => item.id === id);
+    if (item) {
+      setIdValue(item.id);
+      setNameValue(item.name);
+      setEmailValue(item.email);
+      setRoleValue(item.userType);
+      setActiveValue(item.active);
+      setIsUpdateMode(true);
+    }
+  };
 
   const handleSearch = (newSearchText) => {
     setSearchText(newSearchText);
   };
 
-return (
+  return (
     <div>
       <SearchField handleSearch={handleSearch} />
 
@@ -114,17 +114,17 @@ return (
         />
       )}
 
-        {showSuccessAlert && (
-          <AlertMessage
-            severity="success"
-            title="Sukces"
-            message={successAlertMessage}
-            onClose={handleCloseSuccessAlert}
-            resetAlert={resetAlert}
-          />
-        )}
+      {showSuccessAlert && (
+        <AlertMessage
+          severity="success"
+          title="Sukces"
+          message={successAlertMessage}
+          onClose={handleCloseSuccessAlert}
+          resetAlert={resetAlert}
+        />
+      )}
 
-       <SelectType setUserType={setUserType} />
+      <SelectType setUserType={setUserType} />
       <List
         sx={{
           width: "100%",

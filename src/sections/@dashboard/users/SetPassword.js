@@ -30,12 +30,12 @@ const PasswordFields = ({ onPasswordChange, onPasswordsMatchChange, resetPasswor
   const isPasswordsMatch = password === confirmPassword;
 
   useEffect(() => {
-      if (resetPasswords) {
-        setPassword("");
-        setConfirmPassword("");
-        onReset();
-      }
-    }, [resetPasswords, onReset]);
+    if (resetPasswords) {
+      setPassword("");
+      setConfirmPassword("");
+      onReset();
+    }
+  }, [resetPasswords, onReset]);
 
   return (
     <div>
