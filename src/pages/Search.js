@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
-// @mui
-import { useTheme } from '@mui/material/styles';
-import { Grid, Container } from '@mui/material';
-// components
+import { TextField, useTheme, Grid, Container } from '@mui/material';
 import Iconify from '../components/iconify';
 // sections
 import { SearchItemWidgets } from '../sections/@dashboard/search';
@@ -13,6 +10,7 @@ import { SearchItemWidgets } from '../sections/@dashboard/search';
 export default function DashboardAppPage() {
   const theme = useTheme();
   const [places, setPlaces] = useState([]);
+  const [searchText, setSearchText] = useState("");
 
   const headers = {
     Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -20,12 +18,18 @@ export default function DashboardAppPage() {
 
   useEffect(() => {
     fetch("http://localhost:8080/dashboard/place", { headers })
-      .then((response) => response.json())
-      .then((data) => {
+      .then(response => response.json())
+      .then(data => {
         setPlaces(data);
         console.log(data);
       });
   }, []);
+
+  const filteredPlaces = places.filter(place =>
+    place.city.name.toLowerCase().includes(searchText.toLowerCase()) ||
+    place.street.toLowerCase().includes(searchText.toLowerCase()) ||
+    place.name.toLowerCase().includes(searchText.toLowerCase())
+  );
 
   return (
     <>
@@ -34,8 +38,16 @@ export default function DashboardAppPage() {
       </Helmet>
 
       <Container maxWidth="xl">
+        <TextField
+          fullWidth
+          label="Szukaj miejsca"
+          variant="outlined"
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+          sx={{ mb: 2 }}
+        />
         <Grid container spacing={3}>
-          {places.map((place) => (
+          {filteredPlaces.map((place) => (
             <Grid item xs={12} sm={6} md={3} key={place.id}>
               <SearchItemWidgets
                 rating={place.rating.toString()}
