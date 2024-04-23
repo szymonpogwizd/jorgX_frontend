@@ -12,13 +12,13 @@ export default function SelectType({ setUserType }) {
     Authorization: `Bearer ${localStorage.getItem('token')}`
   };
 
-    useEffect(() => {
-      fetch("http://localhost:8080/dashboard/users/userTypes", { headers })
-        .then((response) => response.json())
-        .then((data) => {
-          setData(data);
-        });
-    }, []);
+  useEffect(() => {
+    fetch("http://localhost:8080/dashboard/users/userTypes", { headers })
+      .then((response) => response.json())
+      .then((data) => {
+        setData(data);
+      });
+  }, []);
 
   const handleChange = (event: SelectChangeEvent) => {
     setSongCategory(event.target.value);
@@ -36,12 +36,12 @@ export default function SelectType({ setUserType }) {
           label="SongCategory"
           onChange={handleChange}
         >
-            <MenuItem value="">
-              <em>None</em>
-            </MenuItem>
-            {data.map((item) => (
-              <MenuItem value={item} key={item}>{item}</MenuItem>
-            ))}
+          <MenuItem value="">
+            <em>None</em>
+          </MenuItem>
+          {data.map((item) => (
+            <MenuItem value={item} key={item}>{item}</MenuItem>
+          ))}
         </Select>
       </FormControl>
     </div>

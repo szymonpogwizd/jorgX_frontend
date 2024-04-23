@@ -14,39 +14,39 @@ import {
 // ----------------------------------------------------------------------
 
 export default function DashboardAppPage() {
-    const theme = useTheme();
-    const [numSongs, setNumSongs] = useState(0);
-    const [numPlaylists, setNumPlaylists] = useState(0);
-    const [numGroups, setNumGroups] = useState(0);
-    const [numUsers, setNumUsers] = useState(0);
+  const theme = useTheme();
+  const [numSongs, setNumSongs] = useState(0);
+  const [numPlaylists, setNumPlaylists] = useState(0);
+  const [numGroups, setNumGroups] = useState(0);
+  const [numUsers, setNumUsers] = useState(0);
 
-    const headers = {
-        Authorization: `Bearer ${localStorage.getItem('token')}`
-    };
+  const headers = {
+    Authorization: `Bearer ${localStorage.getItem('token')}`
+  };
 
-    useEffect(() => {
-        fetch("http://localhost:8080/dashboard/app/users", { headers })
-            .then((response) => response.json())
-            .then((data) => setNumUsers(data || "0"));
-    }, []);
+  useEffect(() => {
+    fetch("http://localhost:8080/dashboard/app/users", { headers })
+      .then((response) => response.json())
+      .then((data) => setNumUsers(data || "0"));
+  }, []);
 
-    useEffect(() => {
-        fetch("http://localhost:8080/dashboard/app/opinions", { headers })
-            .then((response) => response.json())
-            .then((data) => setNumSongs(data || "0"));
-    }, []);
+  useEffect(() => {
+    fetch("http://localhost:8080/dashboard/app/opinions", { headers })
+      .then((response) => response.json())
+      .then((data) => setNumSongs(data || "0"));
+  }, []);
 
-    useEffect(() => {
-        fetch("http://localhost:8080/dashboard/app/restaurants", { headers })
-            .then((response) => response.json())
-            .then((data) => setNumPlaylists(data || "0"));
-    }, []);
+  useEffect(() => {
+    fetch("http://localhost:8080/dashboard/app/places", { headers })
+      .then((response) => response.json())
+      .then((data) => setNumPlaylists(data || "0"));
+  }, []);
 
-    useEffect(() => {
-        fetch("http://localhost:8080/dashboard/app/cities", { headers })
-            .then((response) => response.json())
-            .then((data) => setNumGroups(data || "0"));
-    }, []);
+  useEffect(() => {
+    fetch("http://localhost:8080/dashboard/app/cities", { headers })
+      .then((response) => response.json())
+      .then((data) => setNumGroups(data || "0"));
+  }, []);
 
   return (
     <>
@@ -61,7 +61,7 @@ export default function DashboardAppPage() {
 
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={3}>
-              <AppWidgetSummary title="Opinie" total={numSongs} icon={'ant-design:play-circle-outlined'} />
+            <AppWidgetSummary title="Opinie" total={numSongs} icon={'ant-design:play-circle-outlined'} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>

@@ -18,12 +18,12 @@ const SearchField = ({ handleSearch }) => {
       value={searchText}
       onChange={handleChange}
       InputProps={{
-          startAdornment: (
-            <SearchIcon
-              sx={{ color: 'action.active', marginRight: 1 }}
-            />
-          ),
-        }}
+        startAdornment: (
+          <SearchIcon
+            sx={{ color: 'action.active', marginRight: 1 }}
+          />
+        ),
+      }}
       sx={{ mb: 2 }}
     />
   );

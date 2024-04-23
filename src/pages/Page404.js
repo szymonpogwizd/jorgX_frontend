@@ -32,7 +32,7 @@ export default function Page404() {
           </Typography>
 
           <Typography sx={{ color: 'text.secondary' }}>
-            Niestety, nie udało nam się odnaleźć szukanej strony. <br/>
+            Niestety, nie udało nam się odnaleźć szukanej strony. <br />
             Sprawdź, czy wpisałeś poprawny adres URL.
           </Typography>
 

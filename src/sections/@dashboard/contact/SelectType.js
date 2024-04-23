@@ -8,14 +8,14 @@ export default function SelectLabels() {
   const [songCategory, setSongCategory] = React.useState('');
   const [data, setData] = useState([]);
 
-    useEffect(() => {
-      fetch("http://localhost:8080/dashboard/playlists/contact")
-        .then((response) => response.json())
-        .then((data) => {
-          console.log(data);
-          setData(data);
-        });
-    }, []);
+  useEffect(() => {
+    fetch("http://localhost:8080/dashboard/playlists/contact")
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        setData(data);
+      });
+  }, []);
 
   const handleChange = (event: SelectChangeEvent) => {
     setSongCategory(event.target.value);
@@ -32,12 +32,12 @@ export default function SelectLabels() {
           label="ProblemCategory"
           onChange={handleChange}
         >
-            <MenuItem value="">
-              <em>None</em>
-            </MenuItem>
-            {data.map((item) => (
-              <MenuItem value={item} key={item}>{item}</MenuItem>
-            ))}
+          <MenuItem value="">
+            <em>None</em>
+          </MenuItem>
+          {data.map((item) => (
+            <MenuItem value={item} key={item}>{item}</MenuItem>
+          ))}
         </Select>
       </FormControl>
     </div>

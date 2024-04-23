@@ -27,14 +27,14 @@ export default function Page403() {
 
       <Container>
         <StyledContent sx={{ textAlign: 'center', alignItems: 'center' }}>
-         <Typography variant="h4" paragraph>
-          Brak dostępu!
-         </Typography>
+          <Typography variant="h4" paragraph>
+            Brak dostępu!
+          </Typography>
 
-        <Typography sx={{ color: 'text.secondary' }}>
-          Nie masz uprawnień do uzyskania dostępu do tej strony. <br/>
-          Sprawdź swoje uprawnienia lub skontaktuj się z administratorem.
-        </Typography>
+          <Typography sx={{ color: 'text.secondary' }}>
+            Nie masz uprawnień do uzyskania dostępu do tej strony. <br />
+            Sprawdź swoje uprawnienia lub skontaktuj się z administratorem.
+          </Typography>
 
           <Box
             component="img"
