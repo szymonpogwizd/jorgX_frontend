@@ -49,13 +49,7 @@ export default function DashboardAppPage() {
         <Grid container spacing={3}>
           {filteredPlaces.map((place) => (
             <Grid item xs={12} sm={6} md={3} key={place.id}>
-              <SearchItemWidgets
-                rating={place.rating.toString()}
-                city={place.city.name}
-                street={place.street}
-                openingHours={place.openingHours}
-                name={place.name}
-              />
+              <SearchItemWidgets place={place} />
             </Grid>
           ))}
         </Grid>
