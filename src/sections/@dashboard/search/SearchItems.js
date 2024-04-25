@@ -28,7 +28,11 @@ const StyledIcon = styled('div')(({ theme }) => ({
   marginBottom: theme.spacing(3),
 }));
 
-export default function SearchItemWidgets({ place, sx }) {
+SearchItemWidgets.defaultProps = {
+  showButton: true
+};
+
+export default function SearchItemWidgets({ place, sx, showButton }) {
   const navigate = useNavigate();
   const color = getColor(place.rating);
   const icon = getIcon(place.rating);
@@ -66,16 +70,13 @@ export default function SearchItemWidgets({ place, sx }) {
       <Typography variant="subtitle1" sx={{ opacity: 0.72, mb: 1 }}>Miasto: <b>{place.city.name}</b></Typography>
       <Typography variant="subtitle1" sx={{ opacity: 0.72, mb: 1 }}>Ulica: <b>{place.street}</b></Typography>
       <Typography variant="subtitle1" sx={{ opacity: 0.72, mb: 2 }}>Godziny otwarcia: <b>{place.openingHours}</b></Typography>
-      <Button variant="contained" onClick={handleViewReviewsClick}>Zobacz opinie</Button>
+      {
+        showButton && (
+          <Button variant="contained" onClick={handleViewReviewsClick}>
+            Zobacz opinie
+          </Button>
+        )
+      }
     </Card>
   );
 }
-
-SearchItemWidgets.propTypes = {
-  rating: PropTypes.number.isRequired,
-  city: PropTypes.string,
-  street: PropTypes.string,
-  openingHours: PropTypes.string,
-  name: PropTypes.string.isRequired,
-  sx: PropTypes.object,
-};

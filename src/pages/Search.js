@@ -7,7 +7,7 @@ import { SearchItemWidgets } from '../sections/@dashboard/search';
 
 // ----------------------------------------------------------------------
 
-export default function DashboardAppPage() {
+export default function SearchPage() {
   const theme = useTheme();
   const [places, setPlaces] = useState([]);
   const [searchText, setSearchText] = useState("");
@@ -21,7 +21,6 @@ export default function DashboardAppPage() {
       .then(response => response.json())
       .then(data => {
         setPlaces(data);
-        console.log(data);
       });
   }, []);
 
@@ -49,7 +48,7 @@ export default function DashboardAppPage() {
         <Grid container spacing={3}>
           {filteredPlaces.map((place) => (
             <Grid item xs={12} sm={6} md={3} key={place.id}>
-              <SearchItemWidgets place={place} />
+              <SearchItemWidgets place={place}/>
             </Grid>
           ))}
         </Grid>
