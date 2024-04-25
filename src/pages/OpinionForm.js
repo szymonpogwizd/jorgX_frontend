@@ -6,13 +6,18 @@ import {
   FormControlLabel, Switch, FormControl, InputLabel,
   Select, MenuItem, Autocomplete
 } from '@mui/material';
-import { FloatingActionButtonsSave } from '../sections/@dashboard/opinionForm';
+import { FloatingActionButtonsSave, AlertMessage } from '../sections/@dashboard/opinionForm';
 
 export default function Contact() {
   const [newOpinion, setNewOpinion] = useState('');
   const [isNewPlace, setIsNewPlace] = useState(false);
   const [places, setPlaces] = useState([]);
   const [selectedPlaceId, setSelectedPlaceId] = useState(null);
+    const [showAlert, setShowAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState('');
+    const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+    const [successAlertMessage, setSuccessAlertMessage] = useState('');
+    const [alertCount, setAlertCount] = useState(0);
   const theme = useTheme();
 
   const headers = {
@@ -29,6 +34,51 @@ export default function Contact() {
         console.error('Failed to load places:', error);
       });
   }, []);
+
+    const handleSaveOpinion = () => {
+      if (!newOpinion.trim()) {
+        setAlertCount(prevCount => prevCount + 1);
+        setAlertMessage(`[${alertCount}] Opinia nie może być pusta.`);
+        setShowAlert(true);
+        return;
+      }
+
+      const opinionData = {
+        opinion: newOpinion,
+        placeId: selectedPlaceId,
+        email: localStorage.getItem('email'),
+      };
+
+      submitOpinion(opinionData);
+    };
+
+    const submitOpinion = (opinionData) => {
+      fetch("http://localhost:8080/dashboard/opinion", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": headers.Authorization
+        },
+        body: JSON.stringify(opinionData),
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          setNewOpinion('');
+          setAlertCount(prevCount => prevCount + 1);
+          setSuccessAlertMessage(`[${alertCount}] Opinia została pomyślnie wysłana.`);
+          setShowSuccessAlert(true);
+        })
+        .catch(error => {
+          setAlertCount(prevCount => prevCount + 1);
+          setAlertMessage(`[${alertCount}] ${error.message}`);
+          setShowAlert(true);
+        });
+    };
 
   const handleOpinionChange = (event) => {
     setNewOpinion(event.target.value);
@@ -70,6 +120,24 @@ export default function Contact() {
       <Helmet>
         <title>Dodaj opinię | JorgX</title>
       </Helmet>
+
+            {showAlert && (
+              <AlertMessage
+                severity="error"
+                title="Błąd"
+                message={alertMessage}
+                onClose={() => setShowAlert(false)}
+              />
+            )}
+
+            {showSuccessAlert && (
+              <AlertMessage
+                severity="success"
+                title="Sukces"
+                message={successAlertMessage}
+                onClose={() => setShowSuccessAlert(false)}
+              />
+            )}
 
       <Container maxWidth="xl">
         <Typography variant="h4" sx={{ mb: 5 }}>
@@ -139,7 +207,7 @@ export default function Contact() {
               sx={{ mb: 2 }}
             />
 
-            <FloatingActionButtonsSave />
+              <FloatingActionButtonsSave onClick={handleSaveOpinion} />
           </Grid>
         </Grid>
       </Container>
