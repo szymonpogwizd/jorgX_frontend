@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useTheme } from '@mui/material/styles';
 import {
@@ -11,7 +11,23 @@ import { FloatingActionButtonsSave } from '../sections/@dashboard/opinionForm';
 export default function Contact() {
   const [newOpinion, setNewOpinion] = useState('');
   const [isNewPlace, setIsNewPlace] = useState(false);
+  const [places, setPlaces] = useState([]);
   const theme = useTheme();
+
+  const headers = {
+    Authorization: `Bearer ${localStorage.getItem('token')}`
+  };
+
+  useEffect(() => {
+    fetch("http://localhost:8080/dashboard/place", { headers })
+      .then(response => response.json())
+      .then(data => {
+        setPlaces(data);
+      })
+      .catch(error => {
+        console.error('Failed to load places:', error);
+      });
+  }, []);
 
   const handleOpinionChange = (event) => {
     setNewOpinion(event.target.value);
@@ -19,6 +35,15 @@ export default function Contact() {
 
   const toggleNewPlace = (event) => {
     setIsNewPlace(event.target.checked);
+  };
+
+  const customFilterOptions = (options, { inputValue }) => {
+    const normalizedInput = inputValue.toLowerCase().trim();
+    return options.filter(option =>
+      `${option.name} ${option.street} ${option.city.name}`.toLowerCase().includes(normalizedInput) ||
+      `${option.street} ${option.name} ${option.city.name}`.toLowerCase().includes(normalizedInput) ||
+      `${option.city.name} ${option.name}`.toLowerCase().includes(normalizedInput)
+    );
   };
 
   const disabledStyle = {
@@ -44,24 +69,23 @@ export default function Contact() {
         </Typography>
 
         <Grid container spacing={10}>
-          <Grid item xs={12} sm={12}>
+          <Grid item xs={12}>
             <FormControlLabel
               control={<Switch checked={isNewPlace} onChange={toggleNewPlace} />}
               label="Nowe miejsce"
               sx={{ mb: 2 }}
             />
 
-            <FormControl fullWidth sx={{ mb: 2, ...(!isNewPlace ? {} : disabledStyle) }}>
-              <InputLabel id="place-select-label">Wybierz miejsce</InputLabel>
-              <Select
-                labelId="place-select-label"
-                id="place-select"
-                label="Wybierz miejsce"
-                disabled={isNewPlace}
-              >
-                <MenuItem value={10}>Miejsce 1</MenuItem>
-              </Select>
-            </FormControl>
+            <Autocomplete
+              disablePortal
+              id="place-select"
+              options={places}
+              getOptionLabel={(option) => `${option.name} - ${option.city.name} - ${option.street}`}
+              filterOptions={customFilterOptions}
+              sx={{ mb: 2, ...(!isNewPlace ? {} : disabledStyle), width: '100%' }}
+              renderInput={(params) => <TextField {...params} label="Wybierz lub szukaj miejsca" />}
+              disabled={isNewPlace}
+            />
 
             <TextField
               label="Nazwa restauracji"
