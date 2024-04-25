@@ -33,7 +33,7 @@ export default function SearchPage() {
   return (
     <>
       <Helmet>
-        <title>Szukaj | JorgX</title>
+        <title>Szukaj miejsca | JorgX</title>
       </Helmet>
 
       <Container maxWidth="xl">
