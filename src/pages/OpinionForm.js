@@ -13,11 +13,13 @@ export default function Contact() {
   const [isNewPlace, setIsNewPlace] = useState(false);
   const [places, setPlaces] = useState([]);
   const [selectedPlaceId, setSelectedPlaceId] = useState(null);
-    const [showAlert, setShowAlert] = useState(false);
-    const [alertMessage, setAlertMessage] = useState('');
-    const [showSuccessAlert, setShowSuccessAlert] = useState(false);
-    const [successAlertMessage, setSuccessAlertMessage] = useState('');
-    const [alertCount, setAlertCount] = useState(0);
+  const [cities, setCities] = useState([]);
+  const [selectedCity, setSelectedCity] = useState(null);
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+  const [successAlertMessage, setSuccessAlertMessage] = useState('');
+  const [alertCount, setAlertCount] = useState(0);
   const theme = useTheme();
 
   const headers = {
@@ -35,50 +37,61 @@ export default function Contact() {
       });
   }, []);
 
-    const handleSaveOpinion = () => {
-      if (!newOpinion.trim()) {
-        setAlertCount(prevCount => prevCount + 1);
-        setAlertMessage(`[${alertCount}] Opinia nie może być pusta.`);
-        setShowAlert(true);
-        return;
-      }
-
-      const opinionData = {
-        opinion: newOpinion,
-        placeId: selectedPlaceId,
-        email: localStorage.getItem('email'),
-      };
-
-      submitOpinion(opinionData);
-    };
-
-    const submitOpinion = (opinionData) => {
-      fetch("http://localhost:8080/dashboard/opinion", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": headers.Authorization
-        },
-        body: JSON.stringify(opinionData),
+  useEffect(() => {
+    fetch("http://localhost:8080/dashboard/city", { headers })
+      .then(response => response.json())
+      .then(data => {
+        setCities(data);
       })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          return response.json();
-        })
-        .then(data => {
-          setNewOpinion('');
-          setAlertCount(prevCount => prevCount + 1);
-          setSuccessAlertMessage(`[${alertCount}] Opinia została pomyślnie wysłana.`);
-          setShowSuccessAlert(true);
-        })
-        .catch(error => {
-          setAlertCount(prevCount => prevCount + 1);
-          setAlertMessage(`[${alertCount}] ${error.message}`);
-          setShowAlert(true);
-        });
+      .catch(error => {
+        console.error('Failed to load cities:', error);
+      });
+  }, []);
+
+  const handleSaveOpinion = () => {
+    if (!newOpinion.trim()) {
+      setAlertCount(prevCount => prevCount + 1);
+      setAlertMessage(`[${alertCount}] Opinia nie może być pusta.`);
+      setShowAlert(true);
+      return;
+    }
+
+    const opinionData = {
+      opinion: newOpinion,
+      placeId: selectedPlaceId,
+      email: localStorage.getItem('email'),
     };
+
+    submitOpinion(opinionData);
+  };
+
+  const submitOpinion = (opinionData) => {
+    fetch("http://localhost:8080/dashboard/opinion", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": headers.Authorization
+      },
+      body: JSON.stringify(opinionData),
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        setNewOpinion('');
+        setAlertCount(prevCount => prevCount + 1);
+        setSuccessAlertMessage(`[${alertCount}] Opinia została pomyślnie wysłana.`);
+        setShowSuccessAlert(true);
+      })
+      .catch(error => {
+        setAlertCount(prevCount => prevCount + 1);
+        setAlertMessage(`[${alertCount}] ${error.message}`);
+        setShowAlert(true);
+      });
+  };
 
   const handleOpinionChange = (event) => {
     setNewOpinion(event.target.value);
@@ -121,23 +134,23 @@ export default function Contact() {
         <title>Dodaj opinię | JorgX</title>
       </Helmet>
 
-            {showAlert && (
-              <AlertMessage
-                severity="error"
-                title="Błąd"
-                message={alertMessage}
-                onClose={() => setShowAlert(false)}
-              />
-            )}
+      {showAlert && (
+        <AlertMessage
+          severity="error"
+          title="Błąd"
+          message={alertMessage}
+          onClose={() => setShowAlert(false)}
+        />
+      )}
 
-            {showSuccessAlert && (
-              <AlertMessage
-                severity="success"
-                title="Sukces"
-                message={successAlertMessage}
-                onClose={() => setShowSuccessAlert(false)}
-              />
-            )}
+      {showSuccessAlert && (
+        <AlertMessage
+          severity="success"
+          title="Sukces"
+          message={successAlertMessage}
+          onClose={() => setShowSuccessAlert(false)}
+        />
+      )}
 
       <Container maxWidth="xl">
         <Typography variant="h4" sx={{ mb: 5 }}>
@@ -189,12 +202,25 @@ export default function Contact() {
 
             <Autocomplete
               freeSolo
-              disabled={!isNewPlace}
-              sx={{ mb: 2, ...(isNewPlace ? {} : disabledStyle) }}
+              disablePortal
+              id="city-select"
+              options={cities}
+              getOptionLabel={(option) => option.name}
+              value={selectedCity}
+              onChange={(event, newValue) => {
+                if (typeof newValue === 'string') {
+                  setSelectedCity({ name: newValue });
+                } else {
+                  setSelectedCity(newValue);
+                }
+              }}
               renderInput={(params) => (
                 <TextField {...params} label="Wybierz lub dodaj miasto" variant="outlined" />
               )}
+              disabled={!isNewPlace}
+              sx={{ mb: 2, ...(isNewPlace ? {} : disabledStyle) }}
             />
+
 
             <TextField
               label="Twoja opinia"
@@ -207,7 +233,7 @@ export default function Contact() {
               sx={{ mb: 2 }}
             />
 
-              <FloatingActionButtonsSave onClick={handleSaveOpinion} />
+            <FloatingActionButtonsSave onClick={handleSaveOpinion} />
           </Grid>
         </Grid>
       </Container>
