@@ -6,15 +6,17 @@ import Button from '@mui/material/Button';
 import Iconify from '../../../components/iconify';
 
 function getColor(rating) {
-  if (rating <= 2.5) return 'error';
-  if (rating <= 3.5) return 'warning';
-  return 'success';
+  if (rating > 0.0 && rating <= 2.5) return 'error';
+  if (rating > 2.5 && rating <= 3.5) return 'warning';
+  if (rating > 3.5) return 'success';
+  return 'info';
 }
 
 function getIcon(rating) {
-  if (rating <= 2.5) return 'ant-design:frown-outlined';
-  if (rating <= 3.5) return 'ant-design:meh-outlined';
-  return 'ant-design:smile-outlined';
+  if (rating > 0.0 && rating <= 2.5) return 'ant-design:frown-outlined';
+  if (rating > 2.5 && rating <= 3.5) return 'ant-design:meh-outlined';
+  if (rating > 3.5) return 'ant-design:smile-outlined';
+  return 'ant-design:question-outlined'
 }
 
 const StyledIcon = styled('div')(({ theme }) => ({
@@ -66,7 +68,9 @@ export default function SearchItemWidgets({ place, sx, showButton }) {
         <Iconify icon={icon} width={48} height={48} />
       </StyledIcon>
 
-      <Typography variant="subtitle1" sx={{ opacity: 0.72, mb: 1 }}>Średnia ocena: <b>{place.rating.toString()}</b></Typography>
+      <Typography variant="subtitle1" sx={{ opacity: 0.72, mb: 1 }}>
+        Średnia ocena: <b>{place.rating || 'brak opinii'}</b>
+      </Typography>
       <Typography variant="subtitle1" sx={{ opacity: 0.72, mb: 1 }}>Miasto: <b>{place.city.name}</b></Typography>
       <Typography variant="subtitle1" sx={{ opacity: 0.72, mb: 1 }}>Ulica: <b>{place.street}</b></Typography>
       <Typography variant="subtitle1" sx={{ opacity: 0.72, mb: 2 }}>Godziny otwarcia: <b>{place.openingHours}</b></Typography>
