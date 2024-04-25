@@ -9,6 +9,7 @@ import Page403 from './pages/Page403';
 import DashboardAppPage from './pages/DashboardAppPage';
 import Users from './pages/Users';
 import Search from './pages/Search';
+import Place from './pages/Place';
 import Contact from './pages/Contact'
 
 import ProtectedRoute from './route/ProtectedRoute';
@@ -25,6 +26,7 @@ export default function Router() {
         { path: 'app', element: <ProtectedRoute><DashboardAppPage /></ProtectedRoute> },
         { path: 'users', element: <AdminRoute><Users /></AdminRoute> },
         { path: 'contact', element: <ProtectedRoute><Contact /></ProtectedRoute> },
+        { path: 'place', element: <ProtectedRoute><Place /></ProtectedRoute> },
         { path: 'search', element: <ProtectedRoute><Search /></ProtectedRoute> }
       ],
     },

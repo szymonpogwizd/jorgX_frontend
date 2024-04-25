@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import { alpha, styled } from '@mui/material/styles';
 import { Card, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import Iconify from '../../../components/iconify';
 
@@ -27,9 +28,18 @@ const StyledIcon = styled('div')(({ theme }) => ({
   marginBottom: theme.spacing(3),
 }));
 
-export default function SearchItemWidgets({ rating, city, street, openingHours, name, sx }) {
-  const color = getColor(rating);
-  const icon = getIcon(rating);
+SearchItemWidgets.defaultProps = {
+  showButton: true
+};
+
+export default function SearchItemWidgets({ place, sx, showButton }) {
+  const navigate = useNavigate();
+  const color = getColor(place.rating);
+  const icon = getIcon(place.rating);
+
+  const handleViewReviewsClick = () => {
+    navigate('/dashboard/place', { state: { place } });
+  };
 
   return (
     <Card
@@ -42,7 +52,7 @@ export default function SearchItemWidgets({ rating, city, street, openingHours, 
         ...sx,
       }}
     >
-      <Typography variant="h3" sx={{ mb: 2 }}>{name}</Typography>
+      <Typography variant="h3" sx={{ mb: 2 }}>{place.name}</Typography>
       <StyledIcon
         sx={{
           color: (theme) => theme.palette[color].dark,
@@ -56,20 +66,17 @@ export default function SearchItemWidgets({ rating, city, street, openingHours, 
         <Iconify icon={icon} width={48} height={48} />
       </StyledIcon>
 
-      <Typography variant="subtitle1" sx={{ opacity: 0.72, mb: 1 }}>Średnia ocena: <b>{rating}</b></Typography>
-      <Typography variant="subtitle1" sx={{ opacity: 0.72, mb: 1 }}>Miasto: <b>{city}</b></Typography>
-      <Typography variant="subtitle1" sx={{ opacity: 0.72, mb: 1 }}>Ulica: <b>{street}</b></Typography>
-      <Typography variant="subtitle1" sx={{ opacity: 0.72, mb: 2 }}>Godziny otwarcia: <b>{openingHours}</b></Typography>
-      <Button variant="contained">Zobacz opinie</Button>
+      <Typography variant="subtitle1" sx={{ opacity: 0.72, mb: 1 }}>Średnia ocena: <b>{place.rating.toString()}</b></Typography>
+      <Typography variant="subtitle1" sx={{ opacity: 0.72, mb: 1 }}>Miasto: <b>{place.city.name}</b></Typography>
+      <Typography variant="subtitle1" sx={{ opacity: 0.72, mb: 1 }}>Ulica: <b>{place.street}</b></Typography>
+      <Typography variant="subtitle1" sx={{ opacity: 0.72, mb: 2 }}>Godziny otwarcia: <b>{place.openingHours}</b></Typography>
+      {
+        showButton && (
+          <Button variant="contained" onClick={handleViewReviewsClick}>
+            Zobacz opinie
+          </Button>
+        )
+      }
     </Card>
   );
 }
-
-SearchItemWidgets.propTypes = {
-  rating: PropTypes.number.isRequired,
-  city: PropTypes.string,
-  street: PropTypes.string,
-  openingHours: PropTypes.string,
-  name: PropTypes.string.isRequired,
-  sx: PropTypes.object,
-};
