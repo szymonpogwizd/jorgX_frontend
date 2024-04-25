@@ -12,6 +12,7 @@ export default function Contact() {
   const [newOpinion, setNewOpinion] = useState('');
   const [isNewPlace, setIsNewPlace] = useState(false);
   const [places, setPlaces] = useState([]);
+  const [selectedPlaceId, setSelectedPlaceId] = useState(null);
   const theme = useTheme();
 
   const headers = {
@@ -35,6 +36,13 @@ export default function Contact() {
 
   const toggleNewPlace = (event) => {
     setIsNewPlace(event.target.checked);
+    if (event.target.checked) {
+      setSelectedPlaceId(null);
+    }
+  };
+
+  const handlePlaceChange = (event, newValue) => {
+    setSelectedPlaceId(newValue ? newValue.id : null);
   };
 
   const customFilterOptions = (options, { inputValue }) => {
@@ -81,8 +89,8 @@ export default function Contact() {
               id="place-select"
               options={places}
               getOptionLabel={(option) => `${option.name} - ${option.city.name} - ${option.street}`}
-              filterOptions={customFilterOptions}
-              sx={{ mb: 2, ...(!isNewPlace ? {} : disabledStyle), width: '100%' }}
+              onChange={handlePlaceChange}
+              sx={{ mb: 2, width: '100%', ...(!isNewPlace ? {} : disabledStyle) }}
               renderInput={(params) => <TextField {...params} label="Wybierz lub szukaj miejsca" />}
               disabled={isNewPlace}
             />
