@@ -8,7 +8,7 @@ import { OpinionItemWidgets, FloatingActionButtonsSave, AlertMessage } from '../
 
 export default function PlacePage() {
   const location = useLocation();
-  const place = location.state.place;
+  const [place, setPlace] = useState(location.state.place);
   const [opinions, setOpinions] = useState([]);
   const [newOpinion, setNewOpinion] = useState('');
   const [showAlert, setShowAlert] = useState(false);
@@ -57,6 +57,17 @@ export default function PlacePage() {
     submitOpinion(opinionData);
   };
 
+  const loadPlaceDetails = () => {
+    fetch(`http://localhost:8080/dashboard/place/${place.name}`, { headers })
+      .then(response => response.json())
+      .then(data => {
+        setPlace(data);
+      })
+      .catch(error => {
+        console.error('Failed to load place details:', error);
+      });
+  };
+
   const submitOpinion = (opinionData) => {
     fetch("http://localhost:8080/dashboard/opinion", {
       method: "POST",
@@ -73,9 +84,9 @@ export default function PlacePage() {
         return response.json();
       })
       .then(data => {
-        console.log('Opinion submitted:', data);
         setNewOpinion('');
         loadOpinions();
+        loadPlaceDetails();
         setAlertCount(prevCount => prevCount + 1);
         setSuccessAlertMessage(`[${alertCount}] Opinia została pomyślnie wysłana.`);
         setShowSuccessAlert(true);
