@@ -51,7 +51,7 @@ export default function DashboardAppPage() {
   return (
     <>
       <Helmet>
-        <title> Strona główna | JorgX </title>
+        <title> Statystyki | JorgX </title>
       </Helmet>
 
       <Container maxWidth="xl">

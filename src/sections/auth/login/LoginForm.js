@@ -57,7 +57,7 @@ const handleLogin = async () => {
         localStorage.setItem('email', email);
       }
 
-      navigate('/dashboard', { replace: true });
+      navigate('/dashboard/search', { replace: true });
     } else {
       handleCloseAlert();
       setErrorCount(prevCount => prevCount + 1);
