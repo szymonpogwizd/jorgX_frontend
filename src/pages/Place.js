@@ -15,20 +15,25 @@ export default function PlacePage() {
   const [alertMessage, setAlertMessage] = useState('');
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [successAlertMessage, setSuccessAlertMessage] = useState('');
-  const [errorCount, setErrorCount] = useState(0);
+  const [alertCount, setAlertCount] = useState(0);
+
+  useEffect(() => {
+    loadOpinions();
+  }, [place.id]);
 
   const headers = {
     Authorization: `Bearer ${localStorage.getItem('token')}`
   };
 
-  useEffect(() => {
-    fetchOpinions();
-  }, [place.id]);
-
-  const fetchOpinions = () => {
+  const loadOpinions = () => {
     fetch(`http://localhost:8080/dashboard/opinion/place/${place.id}`, { headers })
       .then(response => response.json())
-      .then(data => setOpinions(data));
+      .then(data => {
+        setOpinions(data);
+      })
+      .catch(error => {
+        console.error('Failed to load opinions:', error);
+      });
   };
 
   const handleOpinionChange = (event) => {
@@ -37,8 +42,8 @@ export default function PlacePage() {
 
   const handleSaveOpinion = () => {
     if (!newOpinion.trim()) {
-      setErrorCount(prevCount => prevCount + 1);
-      setAlertMessage(`[${errorCount}] Opinia nie może być pusta.`);
+      setAlertCount(prevCount => prevCount + 1);
+      setAlertMessage(`[${alertCount}] Opinia nie może być pusta.`);
       setShowAlert(true);
       return;
     }
@@ -61,24 +66,25 @@ export default function PlacePage() {
       },
       body: JSON.stringify(opinionData),
     })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    })
-    .then(data => {
-      console.log('Opinion submitted:', data);
-      setNewOpinion('');
-      setErrorCount(prevCount => prevCount + 1);
-      setSuccessAlertMessage(`[${errorCount}] Opinia została pomyślnie wysłana.`);
-      setShowSuccessAlert(true);
-    })
-    .catch(error => {
-      setErrorCount(prevCount => prevCount + 1);
-      setAlertMessage(`[${errorCount}] ${error.message}`);
-      setShowAlert(true);
-    });
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Opinion submitted:', data);
+        setNewOpinion('');
+        loadOpinions();
+        setAlertCount(prevCount => prevCount + 1);
+        setSuccessAlertMessage(`[${alertCount}] Opinia została pomyślnie wysłana.`);
+        setShowSuccessAlert(true);
+      })
+      .catch(error => {
+        setAlertCount(prevCount => prevCount + 1);
+        setAlertMessage(`[${alertCount}] ${error.message}`);
+        setShowAlert(true);
+      });
   };
 
   return (
@@ -119,7 +125,7 @@ export default function PlacePage() {
                 value={newOpinion}
                 onChange={handleOpinionChange}
               />
-            <FloatingActionButtonsSave onClick={handleSaveOpinion} />
+              <FloatingActionButtonsSave onClick={handleSaveOpinion} />
             </Box>
           </Grid>
           <Grid item xs={8}>
