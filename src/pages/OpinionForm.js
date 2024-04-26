@@ -13,7 +13,10 @@ export default function Contact() {
   const [isNewPlace, setIsNewPlace] = useState(false);
   const [places, setPlaces] = useState([]);
   const [selectedPlaceId, setSelectedPlaceId] = useState(null);
-  const [cities, setCities] = useState([]);
+  const [cities, setCities] = useState(null);
+  const [placeName, setPlaceName] = useState(null);
+  const [placeStreet, setPlaceStreet] = useState(null);
+  const [placeOpeningHours, setOpeningHours] = useState(null);
   const [selectedCity, setSelectedCity] = useState(null);
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
@@ -48,50 +51,79 @@ export default function Contact() {
       });
   }, []);
 
-  const handleSaveOpinion = () => {
-    if (!newOpinion.trim()) {
-      setAlertCount(prevCount => prevCount + 1);
-      setAlertMessage(`[${alertCount}] Opinia nie może być pusta.`);
-      setShowAlert(true);
-      return;
-    }
+const handleSaveOpinion = () => {
+  if (!newOpinion.trim()) {
+    setAlertCount(prevCount => prevCount + 1);
+    setAlertMessage(`[${alertCount}] Opinia nie może być pusta.`);
+    setShowAlert(true);
+    return;
+  }
 
+  if (isNewPlace) {
+    const newPlaceData = {
+      opinion: {
+        opinion: newOpinion,
+        email: localStorage.getItem('email')
+      },
+      city: {
+        name: selectedCity.name
+      },
+      place: {
+        name: placeName,
+        street: placeStreet,
+        openingHours: placeOpeningHours,
+        cityId: null
+      }
+    };
+console.log(newPlaceData);
+    fetch('http://localhost:8080/dashboard/general', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': headers.Authorization
+      },
+      body: JSON.stringify(newPlaceData)
+    })
+    .then(handleResponse)
+    .catch(handleError);
+  } else {
     const opinionData = {
       opinion: newOpinion,
       placeId: selectedPlaceId,
-      email: localStorage.getItem('email'),
+      email: localStorage.getItem('email')
     };
 
-    submitOpinion(opinionData);
-  };
-
-  const submitOpinion = (opinionData) => {
     fetch("http://localhost:8080/dashboard/opinion", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": headers.Authorization
+        'Content-Type': 'application/json',
+        'Authorization': headers.Authorization
       },
-      body: JSON.stringify(opinionData),
+      body: JSON.stringify(opinionData)
     })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then(data => {
-        setNewOpinion('');
-        setAlertCount(prevCount => prevCount + 1);
-        setSuccessAlertMessage(`[${alertCount}] Opinia została pomyślnie wysłana.`);
-        setShowSuccessAlert(true);
-      })
-      .catch(error => {
-        setAlertCount(prevCount => prevCount + 1);
-        setAlertMessage(`[${alertCount}] ${error.message}`);
-        setShowAlert(true);
-      });
-  };
+    .then(handleResponse)
+    .catch(handleError);
+  }
+};
+
+const handleResponse = (response) => {
+  if (!response.ok) throw new Error('Network response was not ok');
+  return response.json();
+};
+
+const handleError = (error) => {
+  setAlertCount(prevCount => prevCount + 1);
+  setAlertMessage(`[${alertCount}] ${error.message}`);
+  setShowAlert(true);
+};
+
+const handleSuccess = (data) => {
+  setNewOpinion('');
+  setAlertCount(prevCount => prevCount + 1);
+  setSuccessAlertMessage(`[${alertCount}] Opinia została pomyślnie wysłana.`);
+  setShowSuccessAlert(true);
+};
+
 
   const handleOpinionChange = (event) => {
     setNewOpinion(event.target.value);
@@ -107,6 +139,19 @@ export default function Contact() {
   const handlePlaceChange = (event, newValue) => {
     setSelectedPlaceId(newValue ? newValue.id : null);
   };
+
+  const handlePlaceNameChange = (event) => {
+    setPlaceName(event.target.value);
+  };
+
+  const handlePlaceStreetChange = (event) => {
+    setPlaceStreet(event.target.value);
+  };
+
+  const handlePlaceOpeningHoursChange = (event) => {
+    setOpeningHours(event.target.value);
+  };
+
 
   const customFilterOptions = (options, { inputValue }) => {
     const normalizedInput = inputValue.toLowerCase().trim();
@@ -180,6 +225,7 @@ export default function Contact() {
               label="Nazwa restauracji"
               variant="outlined"
               fullWidth
+              onChange={handlePlaceNameChange}
               disabled={!isNewPlace}
               sx={{ mb: 2, ...(isNewPlace ? {} : disabledStyle) }}
             />
@@ -188,6 +234,7 @@ export default function Contact() {
               label="Ulica"
               variant="outlined"
               fullWidth
+              onChange={handlePlaceStreetChange}
               disabled={!isNewPlace}
               sx={{ mb: 2, ...(isNewPlace ? {} : disabledStyle) }}
             />
@@ -196,6 +243,7 @@ export default function Contact() {
               label="Godziny otwarcia"
               variant="outlined"
               fullWidth
+              onChange={handlePlaceOpeningHoursChange}
               disabled={!isNewPlace}
               sx={{ mb: 2, ...(isNewPlace ? {} : disabledStyle) }}
             />
