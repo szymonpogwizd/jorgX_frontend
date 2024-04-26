@@ -14,10 +14,11 @@ export default function Contact() {
   const [places, setPlaces] = useState([]);
   const [selectedPlaceId, setSelectedPlaceId] = useState(null);
   const [cities, setCities] = useState(null);
-  const [placeName, setPlaceName] = useState(null);
-  const [placeStreet, setPlaceStreet] = useState(null);
-  const [placeOpeningHours, setOpeningHours] = useState(null);
+  const [placeName, setPlaceName] = useState('');
+  const [placeStreet, setPlaceStreet] = useState('');
+  const [placeOpeningHours, setOpeningHours] = useState('');
   const [selectedCity, setSelectedCity] = useState(null);
+  const [cityName, setCityName] = useState('');
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
@@ -51,78 +52,120 @@ export default function Contact() {
       });
   }, []);
 
-const handleSaveOpinion = () => {
-  if (!newOpinion.trim()) {
-    setAlertCount(prevCount => prevCount + 1);
-    setAlertMessage(`[${alertCount}] Opinia nie może być pusta.`);
-    setShowAlert(true);
-    return;
-  }
+  const handleSaveOpinion = () => {
+    if (isNewPlace) {
+      const errors = [];
 
-  if (isNewPlace) {
-    const newPlaceData = {
-      opinion: {
-        opinion: newOpinion,
-        email: localStorage.getItem('email')
-      },
-      city: {
-        name: selectedCity.name
-      },
-      place: {
-        name: placeName,
-        street: placeStreet,
-        openingHours: placeOpeningHours,
-        cityId: null
+      const fields = [
+        { value: newOpinion, name: 'Opinia' },
+        { value: placeName, name: 'Nazwa restauracji' },
+        { value: placeStreet, name: 'Ulica' },
+        { value: cityName, name: 'Miasto' }
+      ];
+
+      fields.forEach((field, index) => {
+        if (!field.value.trim()) {
+          errors.push(`'Pole' ${field.name}: 'nie może być puste.'`);
+        }
+      });
+
+      if (errors.length > 0) {
+        const errorMessages = errors.join('\r');
+        setAlertCount(prevCount => prevCount + 1);
+        setAlertMessage(`[${alertCount}] Wystąpiły następujące błędy:\n${errorMessages}`);
+        setShowAlert(true);
+        return;
       }
-    };
-console.log(newPlaceData);
-    fetch('http://localhost:8080/dashboard/general', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': headers.Authorization
-      },
-      body: JSON.stringify(newPlaceData)
-    })
-    .then(handleResponse)
-    .catch(handleError);
-  } else {
-    const opinionData = {
-      opinion: newOpinion,
-      placeId: selectedPlaceId,
-      email: localStorage.getItem('email')
-    };
 
-    fetch("http://localhost:8080/dashboard/opinion", {
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': headers.Authorization
-      },
-      body: JSON.stringify(opinionData)
-    })
-    .then(handleResponse)
-    .catch(handleError);
-  }
-};
+      const newPlaceData = {
+        opinion: {
+          opinion: newOpinion,
+          email: localStorage.getItem('email')
+        },
+        city: {
+          name: cityName
+        },
+        place: {
+          name: placeName,
+          street: placeStreet,
+          openingHours: placeOpeningHours,
+          cityId: null
+        }
+      };
+      console.log(newPlaceData);
+      fetch('http://localhost:8080/dashboard/general', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': headers.Authorization
+        },
+        body: JSON.stringify(newPlaceData)
+      })
+        .then(handleResponse)
+        .then(data => {
+          setAlertCount(prevCount => prevCount + 1);
+          setSuccessAlertMessage(`[${alertCount}] Opinia została pomyślnie wysłana.`);
+          setShowSuccessAlert(true);
+        })
+        .catch(error => {
+          setAlertCount(prevCount => prevCount + 1);
+          setAlertMessage(`[${alertCount}] ${error.message}`);
+          setShowAlert(true);
+        });
+    } else {
 
-const handleResponse = (response) => {
-  if (!response.ok) throw new Error('Network response was not ok');
-  return response.json();
-};
+      if (!newOpinion.trim()) {
+        setAlertCount(prevCount => prevCount + 1);
+        setAlertMessage(`[${alertCount}] Opinia nie może być pusta.`);
+        setShowAlert(true);
+        return;
+      }
 
-const handleError = (error) => {
-  setAlertCount(prevCount => prevCount + 1);
-  setAlertMessage(`[${alertCount}] ${error.message}`);
-  setShowAlert(true);
-};
+      const opinionData = {
+        opinion: newOpinion,
+        placeId: selectedPlaceId,
+        email: localStorage.getItem('email')
+      };
 
-const handleSuccess = (data) => {
-  setNewOpinion('');
-  setAlertCount(prevCount => prevCount + 1);
-  setSuccessAlertMessage(`[${alertCount}] Opinia została pomyślnie wysłana.`);
-  setShowSuccessAlert(true);
-};
+      fetch("http://localhost:8080/dashboard/opinion", {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': headers.Authorization
+        },
+        body: JSON.stringify(opinionData)
+      })
+        .then(handleResponse)
+        .then(data => {
+          setAlertCount(prevCount => prevCount + 1);
+          setSuccessAlertMessage(`[${alertCount}] Opinia została pomyślnie wysłana.`);
+          setShowSuccessAlert(true);
+        })
+        .catch(error => {
+          setAlertCount(prevCount => prevCount + 1);
+          setAlertMessage(`[${alertCount}] ${error.message}`);
+          setShowAlert(true);
+        });
+    }
+  };
+
+  const handleResponse = (response) => {
+    if (!response.ok) throw new Error('Network response was not ok');
+    return response.json();
+  };
+
+  const handleError = (error) => {
+    setAlertCount(prevCount => prevCount + 1);
+    setAlertMessage(`[${alertCount}] ${error.message}`);
+    setShowAlert(true);
+  };
+
+  const handleSuccess = (data) => {
+    setNewOpinion('');
+    setAlertCount(prevCount => prevCount + 1);
+    setSuccessAlertMessage(`[${alertCount}] Opinia została pomyślnie wysłana.`);
+    setShowSuccessAlert(true);
+  };
 
 
   const handleOpinionChange = (event) => {
@@ -152,6 +195,9 @@ const handleSuccess = (data) => {
     setOpeningHours(event.target.value);
   };
 
+  const handleCityChange = (event) => {
+    setCityName(event.target.value);
+  };
 
   const customFilterOptions = (options, { inputValue }) => {
     const normalizedInput = inputValue.toLowerCase().trim();
@@ -248,27 +294,14 @@ const handleSuccess = (data) => {
               sx={{ mb: 2, ...(isNewPlace ? {} : disabledStyle) }}
             />
 
-            <Autocomplete
-              freeSolo
-              disablePortal
-              id="city-select"
-              options={cities}
-              getOptionLabel={(option) => option.name}
-              value={selectedCity}
-              onChange={(event, newValue) => {
-                if (typeof newValue === 'string') {
-                  setSelectedCity({ name: newValue });
-                } else {
-                  setSelectedCity(newValue);
-                }
-              }}
-              renderInput={(params) => (
-                <TextField {...params} label="Wybierz lub dodaj miasto" variant="outlined" />
-              )}
+            <TextField
+              label="Miasto"
+              variant="outlined"
+              fullWidth
+              onChange={handleCityChange}
               disabled={!isNewPlace}
               sx={{ mb: 2, ...(isNewPlace ? {} : disabledStyle) }}
             />
-
 
             <TextField
               label="Twoja opinia"
