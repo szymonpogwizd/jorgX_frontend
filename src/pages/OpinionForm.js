@@ -19,6 +19,7 @@ export default function Contact() {
   const [placeOpeningHours, setOpeningHours] = useState('');
   const [selectedCity, setSelectedCity] = useState(null);
   const [cityName, setCityName] = useState('');
+  const [selectedPlace, setSelectedPlace] = useState(null);
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
@@ -103,7 +104,13 @@ export default function Contact() {
       })
         .then(handleResponse)
         .then(data => {
+          setPlaceName('');
+          setNewOpinion('');
+          setPlaceStreet('');
+          setCityName('');
+          setOpeningHours('');
           setAlertCount(prevCount => prevCount + 1);
+          handleCloseAlert();
           setSuccessAlertMessage(`[${alertCount}] Opinia została pomyślnie wysłana.`);
           setShowSuccessAlert(true);
         })
@@ -116,7 +123,16 @@ export default function Contact() {
 
       if (!newOpinion.trim()) {
         setAlertCount(prevCount => prevCount + 1);
+        handleCloseSuccessAlert();
         setAlertMessage(`[${alertCount}] Opinia nie może być pusta.`);
+        setShowAlert(true);
+        return;
+      }
+
+      if (selectedPlaceId === null) {
+        setAlertCount(prevCount => prevCount + 1);
+        handleCloseSuccessAlert();
+        setAlertMessage(`[${alertCount}] Nie wybrano miejsca.`);
         setShowAlert(true);
         return;
       }
@@ -138,11 +154,16 @@ export default function Contact() {
         .then(handleResponse)
         .then(data => {
           setAlertCount(prevCount => prevCount + 1);
+          setNewOpinion('');
+          setSelectedPlace(null);
+          setSelectedPlaceId(null);
+          handleCloseAlert();
           setSuccessAlertMessage(`[${alertCount}] Opinia została pomyślnie wysłana.`);
           setShowSuccessAlert(true);
         })
         .catch(error => {
           setAlertCount(prevCount => prevCount + 1);
+          handleCloseSuccessAlert();
           setAlertMessage(`[${alertCount}] ${error.message}`);
           setShowAlert(true);
         });
@@ -181,6 +202,7 @@ export default function Contact() {
 
   const handlePlaceChange = (event, newValue) => {
     setSelectedPlaceId(newValue ? newValue.id : null);
+    setSelectedPlace(newValue);
   };
 
   const handlePlaceNameChange = (event) => {
@@ -198,6 +220,7 @@ export default function Contact() {
   const handleCityChange = (event) => {
     setCityName(event.target.value);
   };
+
 
   const customFilterOptions = (options, { inputValue }) => {
     const normalizedInput = inputValue.toLowerCase().trim();
@@ -219,6 +242,18 @@ export default function Contact() {
     },
   };
 
+  const resetAlert = () => {
+    setAlertMessage("");
+  };
+
+  const handleCloseAlert = () => {
+    setShowAlert(false);
+  };
+
+  const handleCloseSuccessAlert = () => {
+    setShowSuccessAlert(false);
+  };
+
   return (
     <>
       <Helmet>
@@ -230,7 +265,8 @@ export default function Contact() {
           severity="error"
           title="Błąd"
           message={alertMessage}
-          onClose={() => setShowAlert(false)}
+          onClose={handleCloseAlert}
+          resetAlert={resetAlert}
         />
       )}
 
@@ -239,7 +275,8 @@ export default function Contact() {
           severity="success"
           title="Sukces"
           message={successAlertMessage}
-          onClose={() => setShowSuccessAlert(false)}
+          onClose={handleCloseSuccessAlert}
+          resetAlert={resetAlert}
         />
       )}
 
@@ -260,6 +297,7 @@ export default function Contact() {
               disablePortal
               id="place-select"
               options={places}
+              value={selectedPlace}
               getOptionLabel={(option) => `${option.name} - ${option.city.name} - ${option.street}`}
               onChange={handlePlaceChange}
               sx={{ mb: 2, width: '100%', ...(!isNewPlace ? {} : disabledStyle) }}
@@ -271,6 +309,7 @@ export default function Contact() {
               label="Nazwa restauracji"
               variant="outlined"
               fullWidth
+              value={placeName}
               onChange={handlePlaceNameChange}
               disabled={!isNewPlace}
               sx={{ mb: 2, ...(isNewPlace ? {} : disabledStyle) }}
@@ -280,6 +319,7 @@ export default function Contact() {
               label="Ulica"
               variant="outlined"
               fullWidth
+              value={placeStreet}
               onChange={handlePlaceStreetChange}
               disabled={!isNewPlace}
               sx={{ mb: 2, ...(isNewPlace ? {} : disabledStyle) }}
@@ -289,6 +329,7 @@ export default function Contact() {
               label="Godziny otwarcia"
               variant="outlined"
               fullWidth
+              value={placeOpeningHours}
               onChange={handlePlaceOpeningHoursChange}
               disabled={!isNewPlace}
               sx={{ mb: 2, ...(isNewPlace ? {} : disabledStyle) }}
@@ -298,6 +339,7 @@ export default function Contact() {
               label="Miasto"
               variant="outlined"
               fullWidth
+              value={cityName}
               onChange={handleCityChange}
               disabled={!isNewPlace}
               sx={{ mb: 2, ...(isNewPlace ? {} : disabledStyle) }}
