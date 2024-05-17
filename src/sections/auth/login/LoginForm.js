@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Link, Stack, IconButton, Typography, InputAdornment, TextField, Checkbox } from '@mui/material';
+import { Link, Stack, IconButton, TextField, InputAdornment } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import Iconify from '../../../components/iconify';
 import AlertMessage from '../../@dashboard/common/AlertMessage';
@@ -15,10 +15,11 @@ export default function LoginForm() {
   const [errorCount, setErrorCount] = useState(0);
   const [showPassword, setShowPassword] = useState(false);
 
-    useEffect(() => {
-      localStorage.removeItem('token');
-      localStorage.removeItem('email');
-    }, []);
+  useEffect(() => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('email');
+    localStorage.removeItem('userType');
+  }, []);
 
   const handleGoToPasswordRecovery = () => {
     navigate('/passwordRecovery');
@@ -32,60 +33,64 @@ export default function LoginForm() {
     setPassword(event.target.value);
   };
 
-const handleLogin = async () => {
-  try {
-    const credentials = {
-      username: usernameValue,
-      password: passwordValue
-    };
-
-    const response = await axios.post('http://127.0.0.1:8080/login', credentials, {
-      responseType: 'json',
-    });
-
-    if (response.status === 200) {
-      const authorizationHeader = response.headers.authorization;
-
-      if (authorizationHeader) {
-        const token = authorizationHeader.split(' ')[1];
-        localStorage.setItem('token', token);
-      }
-
-      const data = JSON.parse(response.config.data);
-      const email = data.username;
-      if (email) {
-        localStorage.setItem('email', email);
-      }
-
-      navigate('/dashboard/search', { replace: true });
-    } else {
-      handleCloseAlert();
-      setErrorCount(prevCount => prevCount + 1);
-      setAlertMessage(`[${errorCount}] Błąd logowania`);
-      setShowAlert(true);
-    }
-  } catch (error) {
-    if (error.isAxiosError && error.response === undefined) {
-      handleCloseAlert();
-      setErrorCount(prevCount => prevCount + 1);
-      setAlertMessage(`[${errorCount}] Brak połączenia z serwerem`);
-      setShowAlert(true);
-    } else {
-      handleCloseAlert();
-      setErrorCount(prevCount => prevCount + 1);
-      setAlertMessage(`[${errorCount}] Błędny login lub hasło`);
-      setShowAlert(true);
-    }
-  }
-};
-
-      const handleCloseAlert = () => {
-        setShowAlert(false);
+  const handleLogin = async () => {
+    try {
+      const credentials = {
+        username: usernameValue,
+        password: passwordValue
       };
 
-      const resetAlert = () => {
-        setAlertMessage("");
-      };
+      const response = await axios.post('http://127.0.0.1:8080/login', credentials, {
+        responseType: 'json',
+      });
+
+      if (response.status === 200) {
+        const authorizationHeader = response.headers.authorization;
+
+        if (authorizationHeader) {
+          const token = authorizationHeader.split(' ')[1];
+          localStorage.setItem('token', token);
+
+          const userResponse = await axios.get('http://127.0.0.1:8080/dashboard/users/currentUser', {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+
+          const user = userResponse.data;
+          localStorage.setItem('email', user.email);
+          localStorage.setItem('userType', user.userType);
+
+          navigate('/dashboard/search', { replace: true });
+        }
+      } else {
+        handleCloseAlert();
+        setErrorCount(prevCount => prevCount + 1);
+        setAlertMessage(`[${errorCount}] Błąd logowania`);
+        setShowAlert(true);
+      }
+    } catch (error) {
+      if (error.isAxiosError && error.response === undefined) {
+        handleCloseAlert();
+        setErrorCount(prevCount => prevCount + 1);
+        setAlertMessage(`[${errorCount}] Brak połączenia z serwerem`);
+        setShowAlert(true);
+      } else {
+        handleCloseAlert();
+        setErrorCount(prevCount => prevCount + 1);
+        setAlertMessage(`[${errorCount}] Błędny login lub hasło`);
+        setShowAlert(true);
+      }
+    }
+  };
+
+  const handleCloseAlert = () => {
+    setShowAlert(false);
+  };
+
+  const resetAlert = () => {
+    setAlertMessage("");
+  };
 
   return (
     <>
@@ -119,23 +124,6 @@ const handleLogin = async () => {
           }}
         />
       </Stack>
-
-        {/*
-        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
-          <Stack direction="row" alignItems="center" spacing={0}>
-            <Checkbox name="remember" />
-            <Typography variant="body2">Zapamiętaj mnie</Typography>
-          </Stack>
-          <Link
-            variant="subtitle2"
-            underline="hover"
-            style={{ cursor: 'pointer' }}
-            onClick={handleGoToPasswordRecovery}
-          >
-            Nie pamiętasz hasła?
-          </Link>
-        </Stack>
-        */}
 
       <LoadingButton fullWidth size="large" type="submit" variant="contained" onClick={handleLogin} sx={{ my: 3 }}>
         Zaloguj
