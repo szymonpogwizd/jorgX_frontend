@@ -29,7 +29,7 @@ const StyledIcon = styled('div')(({ theme }) => ({
   justifyContent: 'center',
 }));
 
-export default function OpinionItemWidgets({ opinion, currentUserEmail, onDelete, sx }) {
+export default function OpinionItemWidgets({ opinion, currentUserEmail, currentUserRole, onDelete, sx }) {
   const color = getColor(opinion.opinionType);
   const icon = getIcon(opinion.opinionType);
 
@@ -64,7 +64,7 @@ export default function OpinionItemWidgets({ opinion, currentUserEmail, onDelete
           <Typography variant="subtitle1" sx={{ opacity: 0.72 }}><b>{opinion.user.email}</b></Typography>
           <Typography variant="subtitle1" sx={{ opacity: 0.72 }}>{opinion.opinion}</Typography>
         </Grid>
-        {opinion.user.email === currentUserEmail && (
+        {(opinion.user.email === currentUserEmail || currentUserRole === 'ADMINISTRATOR') && (
           <Grid item xs={2}>
             <IconButton onClick={() => onDelete(opinion.id)}>
               <Iconify icon="mdi:delete" width={24} height={24} />
@@ -79,6 +79,7 @@ export default function OpinionItemWidgets({ opinion, currentUserEmail, onDelete
 OpinionItemWidgets.propTypes = {
   opinion: PropTypes.object.isRequired,
   currentUserEmail: PropTypes.string.isRequired,
+  currentUserRole: PropTypes.string.isRequired,
   onDelete: PropTypes.func.isRequired,
   sx: PropTypes.object,
 };

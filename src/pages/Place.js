@@ -17,6 +17,9 @@ export default function PlacePage() {
   const [alertCount, setAlertCount] = useState(0);
 
   const currentUserEmail = localStorage.getItem('email');
+  const currentUserRole = localStorage.getItem('userType');
+
+  console.log(currentUserRole); // Logujemy rolę użytkownika, aby sprawdzić, czy jest poprawnie pobierana
 
   useEffect(() => {
     loadOpinions();
@@ -164,6 +167,7 @@ export default function PlacePage() {
                 key={opinion.id}
                 opinion={opinion}
                 currentUserEmail={currentUserEmail}
+                currentUserRole={currentUserRole}
                 onDelete={handleDeleteOpinion}
               />
             ))}
