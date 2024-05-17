@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useLocation } from 'react-router-dom';
-import { Grid, Container, TextField, Box } from '@mui/material';
+import { Grid, Container, TextField, Box, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from '@mui/material';
 import { SearchItemWidgets } from '../sections/@dashboard/search';
 import { OpinionItemWidgets, FloatingActionButtonsSave, AlertMessage } from '../sections/@dashboard/place';
 
@@ -15,11 +15,11 @@ export default function PlacePage() {
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [successAlertMessage, setSuccessAlertMessage] = useState('');
   const [alertCount, setAlertCount] = useState(0);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [opinionToDelete, setOpinionToDelete] = useState(null);
 
   const currentUserEmail = localStorage.getItem('email');
   const currentUserRole = localStorage.getItem('userType');
-
-  console.log(currentUserRole); // Logujemy rolę użytkownika, aby sprawdzić, czy jest poprawnie pobierana
 
   useEffect(() => {
     loadOpinions();
@@ -102,22 +102,36 @@ export default function PlacePage() {
       });
   };
 
-  const handleDeleteOpinion = (opinionId) => {
-    fetch(`http://localhost:8080/dashboard/opinion/${opinionId}`, {
-      method: 'DELETE',
-      headers
-    })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Failed to delete opinion');
-        }
-        setOpinions(opinions.filter(opinion => opinion.id !== opinionId));
+  const handleOpenDialog = (opinionId) => {
+    setOpinionToDelete(opinionId);
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setOpinionToDelete(null);
+  };
+
+  const handleConfirmDelete = () => {
+    if (opinionToDelete) {
+      fetch(`http://localhost:8080/dashboard/opinion/${opinionToDelete}`, {
+        method: 'DELETE',
+        headers
       })
-      .catch(error => {
-        setAlertCount(prevCount => prevCount + 1);
-        setAlertMessage(`[${alertCount}] ${error.message}`);
-        setShowAlert(true);
-      });
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to delete opinion');
+          }
+          setOpinions(opinions.filter(opinion => opinion.id !== opinionToDelete));
+          handleCloseDialog();
+        })
+        .catch(error => {
+          setAlertCount(prevCount => prevCount + 1);
+          setAlertMessage(`[${alertCount}] ${error.message}`);
+          setShowAlert(true);
+          handleCloseDialog();
+        });
+    }
   };
 
   return (
@@ -168,12 +182,28 @@ export default function PlacePage() {
                 opinion={opinion}
                 currentUserEmail={currentUserEmail}
                 currentUserRole={currentUserRole}
-                onDelete={handleDeleteOpinion}
+                onDelete={handleOpenDialog}
               />
             ))}
           </Grid>
         </Grid>
       </Container>
+
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+      >
+        <DialogTitle>Potwierdzenie usunięcia</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Czy na pewno chcesz usunąć tę opinię? Tej operacji nie można cofnąć.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog}>Anuluj</Button>
+          <Button onClick={handleConfirmDelete} color="primary">Usuń</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
