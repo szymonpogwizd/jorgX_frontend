@@ -17,16 +17,30 @@ export default function PlacePage() {
   const [alertCount, setAlertCount] = useState(0);
   const [openDialog, setOpenDialog] = useState(false);
   const [opinionToDelete, setOpinionToDelete] = useState(null);
+  const [currentUserRole, setCurrentUserRole] = useState('');
 
   const currentUserEmail = localStorage.getItem('email');
-  const currentUserRole = localStorage.getItem('userType');
+
 
   useEffect(() => {
     loadOpinions();
+    loadCurrentUserRole();
   }, [place.id]);
 
   const headers = {
     Authorization: `Bearer ${localStorage.getItem('token')}`
+  };
+
+  const loadCurrentUserRole = () => {
+    fetch(`http://localhost:8080/dashboard/users/userType/${currentUserEmail}`, { headers })
+      .then(response => response.json())
+      .then(data => {
+        setCurrentUserRole(data);
+        console.log('Current user role:', data);
+      })
+      .catch(error => {
+        console.error('Failed to load current user role:', error);
+      });
   };
 
   const loadOpinions = () => {
