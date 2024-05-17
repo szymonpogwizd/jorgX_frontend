@@ -137,6 +137,7 @@ export default function PlacePage() {
             throw new Error('Failed to delete opinion');
           }
           setOpinions(opinions.filter(opinion => opinion.id !== opinionToDelete));
+          loadPlaceDetails();
           handleCloseDialog();
         })
         .catch(error => {
