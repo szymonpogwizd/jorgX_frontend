@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useLocation } from 'react-router-dom';
 import { Grid, Container, TextField, Box } from '@mui/material';
-import Iconify from '../components/iconify';
 import { SearchItemWidgets } from '../sections/@dashboard/search';
 import { OpinionItemWidgets, FloatingActionButtonsSave, AlertMessage } from '../sections/@dashboard/place';
 
@@ -16,6 +15,8 @@ export default function PlacePage() {
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [successAlertMessage, setSuccessAlertMessage] = useState('');
   const [alertCount, setAlertCount] = useState(0);
+
+  const currentUserEmail = localStorage.getItem('email');
 
   useEffect(() => {
     loadOpinions();
@@ -51,7 +52,7 @@ export default function PlacePage() {
     const opinionData = {
       opinion: newOpinion,
       placeId: place.id,
-      email: localStorage.getItem('email'),
+      email: currentUserEmail,
     };
 
     submitOpinion(opinionData);
@@ -83,13 +84,31 @@ export default function PlacePage() {
         }
         return response.json();
       })
-      .then(data => {
+      .then(() => {
         setNewOpinion('');
         loadOpinions();
         loadPlaceDetails();
         setAlertCount(prevCount => prevCount + 1);
         setSuccessAlertMessage(`[${alertCount}] Opinia została pomyślnie wysłana.`);
         setShowSuccessAlert(true);
+      })
+      .catch(error => {
+        setAlertCount(prevCount => prevCount + 1);
+        setAlertMessage(`[${alertCount}] ${error.message}`);
+        setShowAlert(true);
+      });
+  };
+
+  const handleDeleteOpinion = (opinionId) => {
+    fetch(`http://localhost:8080/dashboard/opinion/${opinionId}`, {
+      method: 'DELETE',
+      headers
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to delete opinion');
+        }
+        setOpinions(opinions.filter(opinion => opinion.id !== opinionId));
       })
       .catch(error => {
         setAlertCount(prevCount => prevCount + 1);
@@ -141,7 +160,12 @@ export default function PlacePage() {
           </Grid>
           <Grid item xs={8}>
             {opinions.map(opinion => (
-              <OpinionItemWidgets key={opinion.id} opinion={opinion} />
+              <OpinionItemWidgets
+                key={opinion.id}
+                opinion={opinion}
+                currentUserEmail={currentUserEmail}
+                onDelete={handleDeleteOpinion}
+              />
             ))}
           </Grid>
         </Grid>

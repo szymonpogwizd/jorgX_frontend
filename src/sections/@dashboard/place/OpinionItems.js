@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { alpha, styled } from '@mui/material/styles';
-import { Card, Typography, Grid } from '@mui/material';
+import { Card, Typography, Grid, IconButton } from '@mui/material';
 import Iconify from '../../../components/iconify';
 
 function getColor(opinionType) {
@@ -29,7 +29,7 @@ const StyledIcon = styled('div')(({ theme }) => ({
   justifyContent: 'center',
 }));
 
-export default function OpinionItemWidgets({ opinion, sx }) {
+export default function OpinionItemWidgets({ opinion, currentUserEmail, onDelete, sx }) {
   const color = getColor(opinion.opinionType);
   const icon = getIcon(opinion.opinionType);
 
@@ -60,11 +60,25 @@ export default function OpinionItemWidgets({ opinion, sx }) {
             <Iconify icon={icon} width={48} height={48} />
           </StyledIcon>
         </Grid>
-        <Grid item xs={9}>
+        <Grid item xs={7}>
           <Typography variant="subtitle1" sx={{ opacity: 0.72 }}><b>{opinion.user.email}</b></Typography>
           <Typography variant="subtitle1" sx={{ opacity: 0.72 }}>{opinion.opinion}</Typography>
         </Grid>
+        {opinion.user.email === currentUserEmail && (
+          <Grid item xs={2}>
+            <IconButton onClick={() => onDelete(opinion.id)}>
+              <Iconify icon="mdi:delete" width={24} height={24} />
+            </IconButton>
+          </Grid>
+        )}
       </Grid>
     </Card>
   );
 }
+
+OpinionItemWidgets.propTypes = {
+  opinion: PropTypes.object.isRequired,
+  currentUserEmail: PropTypes.string.isRequired,
+  onDelete: PropTypes.func.isRequired,
+  sx: PropTypes.object,
+};
