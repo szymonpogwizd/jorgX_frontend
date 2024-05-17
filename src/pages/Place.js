@@ -21,6 +21,7 @@ export default function PlacePage() {
 
   const currentUserEmail = localStorage.getItem('email');
 
+
   useEffect(() => {
     loadOpinions();
     loadCurrentUserRole();
