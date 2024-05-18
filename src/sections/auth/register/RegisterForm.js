@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Stack, TextField, IconButton, InputAdornment, Button } from '@mui/material';
+import { Stack, TextField, IconButton, InputAdornment, Button, Typography, Link } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import Iconify from '../../../components/iconify';
 import AlertMessage from '../../@dashboard/common/AlertMessage';
@@ -16,10 +16,33 @@ export default function RegisterForm() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
+  const [errorCount, setErrorCount] = useState(0);
+  const [fieldErrors, setFieldErrors] = useState({
+    name: false,
+    email: false,
+    password: false,
+    confirmPassword: false,
+  });
 
   const handleRegister = async () => {
+    const errors = {
+      name: name === '',
+      email: email === '',
+      password: password === '',
+      confirmPassword: confirmPassword === '',
+    };
+
+    if (Object.values(errors).some(Boolean)) {
+      setFieldErrors(errors);
+      setAlertMessage("Wszystkie pola są obowiązkowe");
+      setShowAlert(true);
+      return;
+    }
+
     if (password !== confirmPassword) {
-      setAlertMessage("Hasła nie są takie same");
+      handleCloseAlert();
+      setErrorCount(prevCount => prevCount + 1);
+      setAlertMessage(`[${errorCount}] Hasła nie są takie same`);
       setShowAlert(true);
       return;
     }
@@ -36,11 +59,19 @@ export default function RegisterForm() {
       if (response.status === 201) {
         navigate('/login', { replace: true });
       } else {
-        setAlertMessage("Registration failed");
+        handleCloseAlert();
+        setErrorCount(prevCount => prevCount + 1);
+        setAlertMessage(`[${errorCount}] Rejestracja nie powiodła się`);
         setShowAlert(true);
       }
     } catch (error) {
-      setAlertMessage("An error occurred during registration");
+      handleCloseAlert();
+      setErrorCount(prevCount => prevCount + 1);
+      if (error.isAxiosError && error.response === undefined) {
+        setAlertMessage(`[${errorCount}] Brak połączenia z serwerem`);
+      } else {
+        setAlertMessage(`[${errorCount}] Wystąpił błąd podczas rejestracji`);
+      }
       setShowAlert(true);
     }
   };
@@ -70,13 +101,27 @@ export default function RegisterForm() {
       )}
 
       <Stack spacing={3}>
-        <TextField label="Nazwa użytkownika" value={name} onChange={(e) => setName(e.target.value)} />
-        <TextField label="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        <TextField
+          label="Nazwa użytkownika"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          error={fieldErrors.name}
+          helperText={fieldErrors.name ? "Pole jest wymagane" : ""}
+        />
+        <TextField
+          label="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          error={fieldErrors.email}
+          helperText={fieldErrors.email ? "Pole jest wymagane" : ""}
+        />
         <TextField
           label="Hasło"
           type={showPassword ? 'text' : 'password'}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          error={fieldErrors.password}
+          helperText={fieldErrors.password ? "Pole jest wymagane" : ""}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -92,6 +137,8 @@ export default function RegisterForm() {
           type={showConfirmPassword ? 'text' : 'password'}
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
+          error={fieldErrors.confirmPassword}
+          helperText={fieldErrors.confirmPassword ? "Pole jest wymagane" : ""}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
