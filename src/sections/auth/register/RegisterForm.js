@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Stack, TextField, IconButton, InputAdornment, Button, Typography, Link } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
@@ -47,33 +46,36 @@ export default function RegisterForm() {
       return;
     }
 
-    try {
-      const response = await axios.post('http://127.0.0.1:8080/dashboard/users', {
-        name,
-        email,
-        password,
-        userType: 'USER',
-        active: true,
-      });
+    const data = {
+      name,
+      email,
+      password,
+      userType: 'USER',
+      active: true,
+    };
 
-      if (response.status === 201) {
+    fetch("http://127.0.0.1:8080/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response.text().then((errorText) => {
+            throw new Error(errorText);
+          });
+        }
         navigate('/login', { replace: true });
-      } else {
+        return response.json();
+      })
+      .catch((error) => {
         handleCloseAlert();
         setErrorCount(prevCount => prevCount + 1);
-        setAlertMessage(`[${errorCount}] Rejestracja nie powiodła się`);
+        setAlertMessage(`[${errorCount}] Wystąpił błąd podczas rejestracji: ${error.message}`);
         setShowAlert(true);
-      }
-    } catch (error) {
-      handleCloseAlert();
-      setErrorCount(prevCount => prevCount + 1);
-      if (error.isAxiosError && error.response === undefined) {
-        setAlertMessage(`[${errorCount}] Brak połączenia z serwerem`);
-      } else {
-        setAlertMessage(`[${errorCount}] Wystąpił błąd podczas rejestracji`);
-      }
-      setShowAlert(true);
-    }
+      });
   };
 
   const handleCloseAlert = () => {
@@ -104,14 +106,20 @@ export default function RegisterForm() {
         <TextField
           label="Nazwa użytkownika"
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => {
+            setName(e.target.value);
+            setFieldErrors({ ...fieldErrors, name: e.target.value === '' });
+          }}
           error={fieldErrors.name}
           helperText={fieldErrors.name ? "Pole jest wymagane" : ""}
         />
         <TextField
           label="Email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            setFieldErrors({ ...fieldErrors, email: e.target.value === '' });
+          }}
           error={fieldErrors.email}
           helperText={fieldErrors.email ? "Pole jest wymagane" : ""}
         />
@@ -119,7 +127,10 @@ export default function RegisterForm() {
           label="Hasło"
           type={showPassword ? 'text' : 'password'}
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e) => {
+            setPassword(e.target.value);
+            setFieldErrors({ ...fieldErrors, password: e.target.value === '' });
+          }}
           error={fieldErrors.password}
           helperText={fieldErrors.password ? "Pole jest wymagane" : ""}
           InputProps={{
@@ -136,7 +147,10 @@ export default function RegisterForm() {
           label="Powtórz hasło"
           type={showConfirmPassword ? 'text' : 'password'}
           value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
+          onChange={(e) => {
+            setConfirmPassword(e.target.value);
+            setFieldErrors({ ...fieldErrors, confirmPassword: e.target.value === '' });
+          }}
           error={fieldErrors.confirmPassword}
           helperText={fieldErrors.confirmPassword ? "Pole jest wymagane" : ""}
           InputProps={{
