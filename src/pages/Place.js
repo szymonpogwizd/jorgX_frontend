@@ -18,9 +18,10 @@ export default function PlacePage() {
   const [openDialog, setOpenDialog] = useState(false);
   const [opinionToDelete, setOpinionToDelete] = useState(null);
   const [currentUserRole, setCurrentUserRole] = useState('');
+  const [editMode, setEditMode] = useState(false);
+  const [opinionToEdit, setOpinionToEdit] = useState(null);
 
   const currentUserEmail = localStorage.getItem('email');
-
 
   useEffect(() => {
     loadOpinions();
@@ -66,13 +67,20 @@ export default function PlacePage() {
       return;
     }
 
-    const opinionData = {
-      opinion: newOpinion,
-      placeId: place.id,
-      email: currentUserEmail,
-    };
-
-    submitOpinion(opinionData);
+    if (editMode) {
+      const updatedOpinion = {
+        ...opinionToEdit,
+        opinion: newOpinion
+      };
+      updateOpinion(opinionToEdit.id, updatedOpinion);
+    } else {
+      const opinionData = {
+        opinion: newOpinion,
+        placeId: place.id,
+        email: currentUserEmail,
+      };
+      submitOpinion(opinionData);
+    }
   };
 
   const loadPlaceDetails = () => {
@@ -116,6 +124,38 @@ export default function PlacePage() {
       });
   };
 
+  const updateOpinion = (id, opinionData) => {
+    fetch(`http://localhost:8080/dashboard/opinion/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": headers.Authorization
+      },
+      body: JSON.stringify(opinionData),
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(() => {
+        setNewOpinion('');
+        setEditMode(false);
+        setOpinionToEdit(null);
+        loadOpinions();
+        loadPlaceDetails();
+        setAlertCount(prevCount => prevCount + 1);
+        setSuccessAlertMessage(`[${alertCount}] Opinia została pomyślnie zaktualizowana.`);
+        setShowSuccessAlert(true);
+      })
+      .catch(error => {
+        setAlertCount(prevCount => prevCount + 1);
+        setAlertMessage(`[${alertCount}] ${error.message}`);
+        setShowAlert(true);
+      });
+  };
+
   const handleOpenDialog = (opinionId) => {
     setOpinionToDelete(opinionId);
     setOpenDialog(true);
@@ -147,6 +187,12 @@ export default function PlacePage() {
           handleCloseDialog();
         });
     }
+  };
+
+  const handleEditOpinion = (opinion) => {
+    setEditMode(true);
+    setOpinionToEdit(opinion);
+    setNewOpinion(opinion.opinion);
   };
 
   return (
@@ -198,6 +244,7 @@ export default function PlacePage() {
                 currentUserEmail={currentUserEmail}
                 currentUserRole={currentUserRole}
                 onDelete={handleOpenDialog}
+                onEdit={handleEditOpinion}
               />
             ))}
           </Grid>

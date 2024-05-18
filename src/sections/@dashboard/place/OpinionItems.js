@@ -29,7 +29,7 @@ const StyledIcon = styled('div')(({ theme }) => ({
   justifyContent: 'center',
 }));
 
-export default function OpinionItemWidgets({ opinion, currentUserEmail, currentUserRole, onDelete, sx }) {
+export default function OpinionItemWidgets({ opinion, currentUserEmail, currentUserRole, onDelete, onEdit }) {
   const color = getColor(opinion.opinionType);
   const icon = getIcon(opinion.opinionType);
 
@@ -42,7 +42,6 @@ export default function OpinionItemWidgets({ opinion, currentUserEmail, currentU
         color: (theme) => theme.palette[color].darker,
         bgcolor: (theme) => theme.palette[color].lighter,
         mb: 2,
-        ...sx,
       }}
     >
       <Grid container spacing={2} alignItems="center">
@@ -60,12 +59,15 @@ export default function OpinionItemWidgets({ opinion, currentUserEmail, currentU
             <Iconify icon={icon} width={48} height={48} />
           </StyledIcon>
         </Grid>
-        <Grid item xs={7}>
+        <Grid item xs={6}>
           <Typography variant="subtitle1" sx={{ opacity: 0.72 }}><b>{opinion.user.email}</b></Typography>
           <Typography variant="subtitle1" sx={{ opacity: 0.72 }}>{opinion.opinion}</Typography>
         </Grid>
         {(opinion.user.email === currentUserEmail || currentUserRole === 'ADMINISTRATOR') && (
-          <Grid item xs={2}>
+          <Grid item xs={3}>
+            <IconButton onClick={() => onEdit(opinion)}>
+              <Iconify icon="mdi:pencil" width={24} height={24} />
+            </IconButton>
             <IconButton onClick={() => onDelete(opinion.id)}>
               <Iconify icon="mdi:delete" width={24} height={24} />
             </IconButton>
@@ -81,5 +83,5 @@ OpinionItemWidgets.propTypes = {
   currentUserEmail: PropTypes.string.isRequired,
   currentUserRole: PropTypes.string.isRequired,
   onDelete: PropTypes.func.isRequired,
-  sx: PropTypes.object,
+  onEdit: PropTypes.func.isRequired,
 };
