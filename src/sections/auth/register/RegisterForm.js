@@ -8,7 +8,7 @@ import AlertMessage from '../../@dashboard/common/AlertMessage';
 
 export default function RegisterForm() {
   const navigate = useNavigate();
-  const [username, setUsername] = useState('');
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -19,13 +19,19 @@ export default function RegisterForm() {
 
   const handleRegister = async () => {
     if (password !== confirmPassword) {
-      setAlertMessage("Passwords do not match");
+      setAlertMessage("Hasła nie są takie same");
       setShowAlert(true);
       return;
     }
 
     try {
-      const response = await axios.post('http://127.0.0.1:8080/register', { username, email, password });
+      const response = await axios.post('http://127.0.0.1:8080/dashboard/users', {
+        name,
+        email,
+        password,
+        userType: 'USER',
+        active: true,
+      });
 
       if (response.status === 201) {
         navigate('/login', { replace: true });
@@ -64,7 +70,7 @@ export default function RegisterForm() {
       )}
 
       <Stack spacing={3}>
-        <TextField label="Nazwa użytkownika" value={username} onChange={(e) => setUsername(e.target.value)} />
+        <TextField label="Nazwa użytkownika" value={name} onChange={(e) => setName(e.target.value)} />
         <TextField label="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
         <TextField
           label="Hasło"
@@ -102,7 +108,7 @@ export default function RegisterForm() {
         Zarejestruj się
       </LoadingButton>
 
-      <Button fullWidth size="large" variant="outlined" onClick={handleBackToLogin} sx={{ my: 3 }}>
+      <Button fullWidth size="large" variant="outlined" onClick={handleBackToLogin} sx={{ mb: 3 }}>
         Logowanie
       </Button>
     </>
