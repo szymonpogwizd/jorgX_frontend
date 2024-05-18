@@ -46,23 +46,34 @@ export default function LoginForm() {
 
       if (response.status === 200) {
         const authorizationHeader = response.headers.authorization;
-
+        const token = authorizationHeader.split(' ')[1];
         if (authorizationHeader) {
-          const token = authorizationHeader.split(' ')[1];
           localStorage.setItem('token', token);
+        }
 
+        const data = JSON.parse(response.config.data);
+        const email = data.username;
+        if (email) {
+          localStorage.setItem('email', email);
+        }
+
+        try {
           const userResponse = await axios.get('http://127.0.0.1:8080/dashboard/users/currentUser', {
             headers: {
               'Authorization': `Bearer ${token}`
             }
           });
 
-          const user = userResponse.data;
-          localStorage.setItem('email', user.email);
-          localStorage.setItem('userType', user.userType);
+          console.log('User response:', userResponse);
 
-          navigate('/dashboard/search', { replace: true });
+          const user = userResponse.data;
+          localStorage.setItem('userType', user.userType);
+        } catch (error) {
+          console.error('Error fetching current user:', error.response ? error.response.data : error.message);
         }
+
+
+        navigate('/dashboard/search', { replace: true });
       } else {
         handleCloseAlert();
         setErrorCount(prevCount => prevCount + 1);
@@ -124,6 +135,23 @@ export default function LoginForm() {
           }}
         />
       </Stack>
+
+      {/*
+        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
+          <Stack direction="row" alignItems="center" spacing={0}>
+            <Checkbox name="remember" />
+            <Typography variant="body2">Zapamiętaj mnie</Typography>
+          </Stack>
+          <Link
+            variant="subtitle2"
+            underline="hover"
+            style={{ cursor: 'pointer' }}
+            onClick={handleGoToPasswordRecovery}
+          >
+            Nie pamiętasz hasła?
+          </Link>
+        </Stack>
+        */}
 
       <LoadingButton fullWidth size="large" type="submit" variant="contained" onClick={handleLogin} sx={{ my: 3 }}>
         Zaloguj
