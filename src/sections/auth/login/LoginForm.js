@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Link, Stack, IconButton, TextField, InputAdornment } from '@mui/material';
+import { Link, Stack, IconButton, TextField, InputAdornment, Typography } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import Iconify from '../../../components/iconify';
 import AlertMessage from '../../@dashboard/common/AlertMessage';
@@ -23,6 +23,10 @@ export default function LoginForm() {
 
   const handleGoToPasswordRecovery = () => {
     navigate('/passwordRecovery');
+  };
+
+  const handleGoToRegister = () => {
+    navigate('/register');
   };
 
   const handleUsernameChange = (event) => {
@@ -63,8 +67,6 @@ export default function LoginForm() {
               'Authorization': `Bearer ${token}`
             }
           });
-
-          console.log('User response:', userResponse);
 
           const user = userResponse.data;
           localStorage.setItem('userType', user.userType);
@@ -156,6 +158,18 @@ export default function LoginForm() {
       <LoadingButton fullWidth size="large" type="submit" variant="contained" onClick={handleLogin} sx={{ my: 3 }}>
         Zaloguj
       </LoadingButton>
+
+      <Typography variant="body2" align="center">
+        Nie masz konta?{' '}
+        <Link
+          variant="subtitle2"
+          underline="hover"
+          style={{ cursor: 'pointer' }}
+          onClick={handleGoToRegister}
+        >
+          Zarejestruj się
+        </Link>
+      </Typography>
     </>
   );
 }
