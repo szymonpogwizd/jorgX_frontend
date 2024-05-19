@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useTheme } from '@mui/material/styles';
+import { Grid, Container, Typography } from '@mui/material';
+import { FloatingActionButtonsSave } from '../sections/@dashboard/opinionForm';
+import { AlertMessage } from '../sections/@dashboard/opinionForm/AlertMessages';
 import {
-  Grid, Container, Typography, TextField, Box,
-  FormControlLabel, Switch, FormControl, InputLabel,
-  Select, MenuItem, Autocomplete
-} from '@mui/material';
-import { FloatingActionButtonsSave, AlertMessage } from '../sections/@dashboard/opinionForm';
+  OpinionForm,
+  PlaceFields,
+  OpinionFields,
+} from '../sections/@dashboard/opinionForm/FormComponents';
+import { fetchPlaces, fetchCities, postNewPlace, postOpinion } from '../sections/@dashboard/opinionForm/api';
 
 export default function Contact() {
   const [newOpinion, setNewOpinion] = useState('');
@@ -17,7 +20,6 @@ export default function Contact() {
   const [placeName, setPlaceName] = useState('');
   const [placeStreet, setPlaceStreet] = useState('');
   const [placeOpeningHours, setOpeningHours] = useState('');
-  const [selectedCity, setSelectedCity] = useState(null);
   const [cityName, setCityName] = useState('');
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [showAlert, setShowAlert] = useState(false);
@@ -27,33 +29,17 @@ export default function Contact() {
   const [alertCount, setAlertCount] = useState(0);
   const theme = useTheme();
 
-  const headers = {
-    Authorization: `Bearer ${localStorage.getItem('token')}`
-  };
-
   useEffect(() => {
-    fetch("http://localhost:8080/dashboard/place", { headers })
-      .then(response => response.json())
-      .then(data => {
-        setPlaces(data);
-      })
-      .catch(error => {
-        console.error('Failed to load places:', error);
-      });
-  }, []);
-
-  useEffect(() => {
-    fetch("http://localhost:8080/dashboard/city", { headers })
-      .then(response => response.json())
-      .then(data => {
-        setCities(data);
-      })
-      .catch(error => {
-        console.error('Failed to load cities:', error);
-      });
+    fetchPlaces().then(setPlaces).catch(handleError);
+    fetchCities().then(setCities).catch(handleError);
   }, []);
 
   const handleSaveOpinion = () => {
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    };
+
     if (isNewPlace) {
       const errors = [];
 
@@ -64,15 +50,15 @@ export default function Contact() {
         { value: cityName, name: 'Miasto' }
       ];
 
-      fields.forEach((field, index) => {
+      fields.forEach((field) => {
         if (!field.value.trim()) {
-          errors.push(`'Pole' ${field.name}: 'nie może być puste.'`);
+          errors.push(`Pole ${field.name}: nie może być puste.`);
         }
       });
 
       if (errors.length > 0) {
         const errorMessages = errors.join('\r');
-        setAlertCount(prevCount => prevCount + 1);
+        setAlertCount((prevCount) => prevCount + 1);
         setAlertMessage(`[${alertCount}] Wystąpiły następujące błędy:\n${errorMessages}`);
         setShowAlert(true);
         return;
@@ -93,36 +79,33 @@ export default function Contact() {
           cityId: null
         }
       };
-      console.log(newPlaceData);
+
       fetch('http://localhost:8080/dashboard/general', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': headers.Authorization
-        },
+        headers,
         body: JSON.stringify(newPlaceData)
       })
         .then(handleResponse)
-        .then(data => {
+        .then(() => {
           setPlaceName('');
           setNewOpinion('');
           setPlaceStreet('');
           setCityName('');
           setOpeningHours('');
-          setAlertCount(prevCount => prevCount + 1);
+          setAlertCount((prevCount) => prevCount + 1);
           handleCloseAlert();
           setSuccessAlertMessage(`[${alertCount}] Opinia została pomyślnie wysłana.`);
           setShowSuccessAlert(true);
         })
-        .catch(error => {
-          setAlertCount(prevCount => prevCount + 1);
+        .catch((error) => {
+          setAlertCount((prevCount) => prevCount + 1);
           setAlertMessage(`[${alertCount}] ${error.message}`);
           setShowAlert(true);
         });
     } else {
 
       if (!newOpinion.trim()) {
-        setAlertCount(prevCount => prevCount + 1);
+        setAlertCount((prevCount) => prevCount + 1);
         handleCloseSuccessAlert();
         setAlertMessage(`[${alertCount}] Opinia nie może być pusta.`);
         setShowAlert(true);
@@ -130,7 +113,7 @@ export default function Contact() {
       }
 
       if (selectedPlaceId === null) {
-        setAlertCount(prevCount => prevCount + 1);
+        setAlertCount((prevCount) => prevCount + 1);
         handleCloseSuccessAlert();
         setAlertMessage(`[${alertCount}] Nie wybrano miejsca.`);
         setShowAlert(true);
@@ -145,15 +128,12 @@ export default function Contact() {
 
       fetch("http://localhost:8080/dashboard/opinion", {
         method: "POST",
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': headers.Authorization
-        },
+        headers,
         body: JSON.stringify(opinionData)
       })
         .then(handleResponse)
-        .then(data => {
-          setAlertCount(prevCount => prevCount + 1);
+        .then(() => {
+          setAlertCount((prevCount) => prevCount + 1);
           setNewOpinion('');
           setSelectedPlace(null);
           setSelectedPlaceId(null);
@@ -161,8 +141,8 @@ export default function Contact() {
           setSuccessAlertMessage(`[${alertCount}] Opinia została pomyślnie wysłana.`);
           setShowSuccessAlert(true);
         })
-        .catch(error => {
-          setAlertCount(prevCount => prevCount + 1);
+        .catch((error) => {
+          setAlertCount((prevCount) => prevCount + 1);
           handleCloseSuccessAlert();
           setAlertMessage(`[${alertCount}] ${error.message}`);
           setShowAlert(true);
@@ -176,18 +156,25 @@ export default function Contact() {
   };
 
   const handleError = (error) => {
-    setAlertCount(prevCount => prevCount + 1);
+    setAlertCount((prevCount) => prevCount + 1);
     setAlertMessage(`[${alertCount}] ${error.message}`);
     setShowAlert(true);
   };
 
-  const handleSuccess = (data) => {
+  const handleSuccess = () => {
     setNewOpinion('');
-    setAlertCount(prevCount => prevCount + 1);
+    setAlertCount((prevCount) => prevCount + 1);
     setSuccessAlertMessage(`[${alertCount}] Opinia została pomyślnie wysłana.`);
     setShowSuccessAlert(true);
   };
 
+  const handleCloseAlert = () => {
+    setShowAlert(false);
+  };
+
+  const handleCloseSuccessAlert = () => {
+    setShowSuccessAlert(false);
+  };
 
   const handleOpinionChange = (event) => {
     setNewOpinion(event.target.value);
@@ -221,145 +208,54 @@ export default function Contact() {
     setCityName(event.target.value);
   };
 
-
-  const customFilterOptions = (options, { inputValue }) => {
-    const normalizedInput = inputValue.toLowerCase().trim();
-    return options.filter(option =>
-      `${option.name} ${option.street} ${option.city.name}`.toLowerCase().includes(normalizedInput) ||
-      `${option.street} ${option.name} ${option.city.name}`.toLowerCase().includes(normalizedInput) ||
-      `${option.city.name} ${option.name}`.toLowerCase().includes(normalizedInput)
-    );
-  };
-
-  const disabledStyle = {
-    bgcolor: theme.palette.action.disabledBackground,
-    color: theme.palette.text.disabled,
-    ".MuiOutlinedInput-notchedOutline": {
-      borderColor: theme.palette.action.disabled,
-    },
-    ".MuiInputLabel-root": {
-      color: theme.palette.text.disabled,
-    },
-  };
-
-  const resetAlert = () => {
-    setAlertMessage("");
-  };
-
-  const handleCloseAlert = () => {
-    setShowAlert(false);
-  };
-
-  const handleCloseSuccessAlert = () => {
-    setShowSuccessAlert(false);
-  };
-
   return (
     <>
       <Helmet>
         <title>Dodaj opinię | JorgX</title>
       </Helmet>
-
-      {showAlert && (
-        <AlertMessage
-          severity="error"
-          title="Błąd"
-          message={alertMessage}
-          onClose={handleCloseAlert}
-          resetAlert={resetAlert}
-        />
-      )}
-
-      {showSuccessAlert && (
-        <AlertMessage
-          severity="success"
-          title="Sukces"
-          message={successAlertMessage}
-          onClose={handleCloseSuccessAlert}
-          resetAlert={resetAlert}
-        />
-      )}
-
       <Container maxWidth="xl">
         <Typography variant="h4" sx={{ mb: 5 }}>
           Dodaj opinię
         </Typography>
-
         <Grid container spacing={10}>
           <Grid item xs={12}>
-            <FormControlLabel
-              control={<Switch checked={isNewPlace} onChange={toggleNewPlace} />}
-              label="Nowe miejsce"
-              sx={{ mb: 2 }}
+            <OpinionForm
+              isNewPlace={isNewPlace}
+              toggleNewPlace={toggleNewPlace}
+              places={places}
+              selectedPlace={selectedPlace}
+              setSelectedPlace={setSelectedPlace}
+              setSelectedPlaceId={setSelectedPlaceId}
             />
-
-            <Autocomplete
-              disablePortal
-              id="place-select"
-              options={places}
-              value={selectedPlace}
-              getOptionLabel={(option) => `${option.name} - ${option.city.name} - ${option.street}`}
-              onChange={handlePlaceChange}
-              sx={{ mb: 2, width: '100%', ...(!isNewPlace ? {} : disabledStyle) }}
-              renderInput={(params) => <TextField {...params} label="Wybierz lub szukaj miejsca" />}
-              disabled={isNewPlace}
+            {isNewPlace && (
+              <PlaceFields
+                placeName={placeName}
+                setPlaceName={setPlaceName}
+                placeStreet={placeStreet}
+                setPlaceStreet={setPlaceStreet}
+                placeOpeningHours={placeOpeningHours}
+                setOpeningHours={setOpeningHours}
+                cityName={cityName}
+                setCityName={setCityName}
+                theme={theme}
+              />
+            )}
+            <OpinionFields
+              newOpinion={newOpinion}
+              setNewOpinion={setNewOpinion}
             />
-
-            <TextField
-              label="Nazwa restauracji"
-              variant="outlined"
-              fullWidth
-              value={placeName}
-              onChange={handlePlaceNameChange}
-              disabled={!isNewPlace}
-              sx={{ mb: 2, ...(isNewPlace ? {} : disabledStyle) }}
-            />
-
-            <TextField
-              label="Ulica"
-              variant="outlined"
-              fullWidth
-              value={placeStreet}
-              onChange={handlePlaceStreetChange}
-              disabled={!isNewPlace}
-              sx={{ mb: 2, ...(isNewPlace ? {} : disabledStyle) }}
-            />
-
-            <TextField
-              label="Godziny otwarcia"
-              variant="outlined"
-              fullWidth
-              value={placeOpeningHours}
-              onChange={handlePlaceOpeningHoursChange}
-              disabled={!isNewPlace}
-              sx={{ mb: 2, ...(isNewPlace ? {} : disabledStyle) }}
-            />
-
-            <TextField
-              label="Miasto"
-              variant="outlined"
-              fullWidth
-              value={cityName}
-              onChange={handleCityChange}
-              disabled={!isNewPlace}
-              sx={{ mb: 2, ...(isNewPlace ? {} : disabledStyle) }}
-            />
-
-            <TextField
-              label="Twoja opinia"
-              multiline
-              rows={6}
-              fullWidth
-              variant="outlined"
-              value={newOpinion}
-              onChange={handleOpinionChange}
-              sx={{ mb: 2 }}
-            />
-
             <FloatingActionButtonsSave onClick={handleSaveOpinion} />
           </Grid>
         </Grid>
       </Container>
+      <AlertMessage
+        showAlert={showAlert}
+        showSuccessAlert={showSuccessAlert}
+        alertMessage={alertMessage}
+        successAlertMessage={successAlertMessage}
+        onCloseAlert={handleCloseAlert}
+        onCloseSuccessAlert={handleCloseSuccessAlert}
+      />
     </>
   );
 }
