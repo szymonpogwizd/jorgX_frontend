@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { TextField, useTheme, Grid, Container, MenuItem, Select, InputLabel, FormControl, IconButton, Button } from '@mui/material';
+import { TextField, useTheme, Grid, Container, MenuItem, Select, InputLabel, FormControl, IconButton } from '@mui/material';
 import Iconify from '../components/iconify';
 import { SearchItemWidgets } from '../sections/@dashboard/search';
 
@@ -27,16 +27,15 @@ export default function SearchPage() {
   }, []);
 
   const loadCurrentUserRole = () => {
-fetch(`http://localhost:8080/dashboard/users/userType/${currentUserEmail}`, { headers })
-  .then(response => response.json())
-  .then(data => {
-    console.log('Response from server:', data);
-    setCurrentUserRole(data);
-  })
-  .catch(error => {
-    console.error('Error while fetching user role:', error);
-  });
-
+    fetch(`http://localhost:8080/dashboard/users/userType/${currentUserEmail}`, { headers })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Response from server:', data);
+        setCurrentUserRole(data);
+      })
+      .catch(error => {
+        console.error('Error while fetching user role:', error);
+      });
   };
 
   const handleSortChange = (event) => {
@@ -148,17 +147,13 @@ fetch(`http://localhost:8080/dashboard/users/userType/${currentUserEmail}`, { he
         <Grid container spacing={3}>
           {filteredPlaces.map((place) => (
             <Grid item xs={12} sm={6} md={3} key={place.id}>
-              <SearchItemWidgets place={place} />
-              {currentUserRole === 'ADMINISTRATOR' && (
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  onClick={() => handleDeletePlace(place.id)}
-                  sx={{ mt: 2 }}
-                >
-                  Usuń
-                </Button>
-              )}
+              <SearchItemWidgets
+                place={place}
+                currentUserRole={currentUserRole}
+                headers={headers}
+                places={places}
+                setPlaces={setPlaces}
+              />
             </Grid>
           ))}
         </Grid>
