@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useTheme } from '@mui/material/styles';
 import { Grid, Container, Typography } from '@mui/material';
-import { FloatingActionButtonsSave } from '../sections/@dashboard/opinionForm';
-import { AlertMessage } from '../sections/@dashboard/opinionForm/AlertMessages';
+import { FloatingActionButtonsSave, AlertMessage } from '../sections/@dashboard/opinionForm';
 import {
   OpinionForm,
   PlaceFields,
@@ -33,6 +32,7 @@ export default function Contact() {
     fetchPlaces().then(setPlaces).catch(handleError);
     fetchCities().then(setCities).catch(handleError);
   }, []);
+
 
   const handleSaveOpinion = () => {
     const headers = {
@@ -248,6 +248,7 @@ export default function Contact() {
           </Grid>
         </Grid>
       </Container>
+      {/* Wyświetlanie alertu */}
       <AlertMessage
         showAlert={showAlert}
         showSuccessAlert={showSuccessAlert}
