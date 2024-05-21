@@ -9,12 +9,12 @@ const navConfig = [
   {
     title: 'Szukaj miejsca',
     path: '/dashboard/search',
-    icon: icon('chat_bubble_black_24dp')
+    icon: icon('place')
   },
   {
     title: 'Dodaj opinię',
     path: '/dashboard/opinionForm',
-    icon: icon('chat_bubble_black_24dp')
+    icon: icon('opinion')
   },
   {
     title: 'Statystyki',
@@ -24,7 +24,7 @@ const navConfig = [
   {
     title: 'Kontakt',
     path: '/dashboard/contact',
-    icon: icon('chat_bubble_black_24dp'),
+    icon: icon('contact'),
   },
   {
     title: 'Użytkownicy',
@@ -34,3 +34,7 @@ const navConfig = [
 ];
 
 export default navConfig;
+
+
+
+
