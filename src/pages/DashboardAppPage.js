@@ -61,15 +61,15 @@ export default function DashboardAppPage() {
 
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Opinie" total={numOpinions} icon={'ant-design:play-circle-outlined'} />
+            <AppWidgetSummary title="Opinie" total={numOpinions} icon={'ant-design:star'} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Lokale" total={numPlaces} color="info" icon={'ant-design:play-square-outlined'} />
+            <AppWidgetSummary title="Lokale" total={numPlaces} color="info" icon={'ant-design:shop'} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Miasta" total={numCities} color="error" icon={'ant-design:group-outlined'} />
+            <AppWidgetSummary title="Miasta" total={numCities} color="error" icon={'ant-design:bank'} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
