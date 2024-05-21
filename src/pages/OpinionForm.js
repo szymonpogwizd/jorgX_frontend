@@ -168,6 +168,10 @@ export default function Contact() {
     setShowSuccessAlert(true);
   };
 
+    const resetAlert = () => {
+      setAlertMessage("");
+    };
+
   const handleCloseAlert = () => {
     setShowAlert(false);
   };
@@ -213,6 +217,26 @@ export default function Contact() {
       <Helmet>
         <title>Dodaj opinię | JorgX</title>
       </Helmet>
+
+      {showAlert && (
+              <AlertMessage
+                severity="error"
+                title="Błąd"
+                message={alertMessage}
+                onClose={handleCloseAlert}
+                resetAlert={resetAlert}
+              />
+            )}
+
+            {showSuccessAlert && (
+              <AlertMessage
+                severity="success"
+                title="Sukces"
+                message={successAlertMessage}
+                onClose={handleCloseSuccessAlert}
+                resetAlert={resetAlert}
+              />
+            )}
       <Container maxWidth="xl">
         <Typography variant="h4" sx={{ mb: 5 }}>
           Dodaj opinię
@@ -248,15 +272,6 @@ export default function Contact() {
           </Grid>
         </Grid>
       </Container>
-      {/* Wyświetlanie alertu */}
-      <AlertMessage
-        showAlert={showAlert}
-        showSuccessAlert={showSuccessAlert}
-        alertMessage={alertMessage}
-        successAlertMessage={successAlertMessage}
-        onCloseAlert={handleCloseAlert}
-        onCloseSuccessAlert={handleCloseSuccessAlert}
-      />
     </>
   );
 }
