@@ -68,6 +68,7 @@ export default function OpinionItemWidgets({ opinion, currentUserEmail, currentU
             <IconButton onClick={() => onEdit(opinion)}>
               <Iconify icon="mdi:pencil" width={24} height={24} />
             </IconButton>
+            {/* Przycisk do usuwania opinii */}
             <IconButton onClick={() => onDelete(opinion.id)}>
               <Iconify icon="mdi:delete" width={24} height={24} />
             </IconButton>
