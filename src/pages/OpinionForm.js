@@ -78,6 +78,28 @@ export default function Contact() {
         return;
       }
 
+      fetch(`http://localhost:8080/dashboard/place/checkPlaceExists?name=${encodeURIComponent(placeName)}&street=${encodeURIComponent(placeStreet)}`, {
+  method: 'GET',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': headers.Authorization
+  }
+})
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
+  .then(exists => {
+    if (exists) {
+      setAlertCount(prevCount => prevCount + 1);
+      setAlertMessage(`[${alertCount}] Miejsce o tej nazwie i adresie już istnieje!`);
+      setShowAlert(true);
+      return;
+    }
+
+
       const newPlaceData = {
         opinion: {
           opinion: newOpinion,
@@ -119,7 +141,11 @@ export default function Contact() {
           setAlertMessage(`[${alertCount}] ${error.message}`);
           setShowAlert(true);
         });
-    } else {
+    })
+    .catch(error=> {
+      console.error('Wystąpił błąd podczas sprawdzania miejsca', error);
+    });
+  }else {
 
       if (!newOpinion.trim()) {
         setAlertCount(prevCount => prevCount + 1);
