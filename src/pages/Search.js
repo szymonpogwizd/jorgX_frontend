@@ -4,14 +4,14 @@ import { TextField, useTheme, Grid, Container, MenuItem, Select, InputLabel, For
 import Iconify from '../components/iconify';
 import { SearchItemWidgets } from '../sections/@dashboard/search';
 
-// ----------------------------------------------------------------------
-
 export default function SearchPage() {
   const theme = useTheme();
   const [places, setPlaces] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [sortCriterion, setSortCriterion] = useState("name");
   const [sortOrder, setSortOrder] = useState("asc"); // "asc" for ascending, "desc" for descending
+  const [currentUserRole, setCurrentUserRole] = useState('');
+  const currentUserEmail = localStorage.getItem('email');
 
   const headers = {
     Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -23,7 +23,20 @@ export default function SearchPage() {
       .then(data => {
         setPlaces(data);
       });
+    loadCurrentUserRole();
   }, []);
+
+  const loadCurrentUserRole = () => {
+    fetch(`http://localhost:8080/dashboard/users/userType/${currentUserEmail}`, { headers })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Response from server:', data);
+        setCurrentUserRole(data);
+      })
+      .catch(error => {
+        console.error('Error while fetching user role:', error);
+      });
+  };
 
   const handleSortChange = (event) => {
     setSortCriterion(event.target.value);
@@ -71,6 +84,35 @@ export default function SearchPage() {
     place.name.toLowerCase().includes(searchText.toLowerCase())
   );
 
+  const handleDeletePlace = async (placeId) => {
+    const confirmed = window.confirm('Czy na pewno chcesz usunąć to miejsce i wszystkie związane z nim opinie?');
+    if (!confirmed) return;
+
+    try {
+      const opinionResponse = await fetch(`http://localhost:8080/dashboard/opinion/place/${placeId}`, {
+        method: 'DELETE',
+        headers,
+      });
+
+      if (!opinionResponse.ok) {
+        throw new Error('Błąd podczas usuwania opinii');
+      }
+
+      const placeResponse = await fetch(`http://localhost:8080/dashboard/place/${placeId}`, {
+        method: 'DELETE',
+        headers,
+      });
+
+      if (!placeResponse.ok) {
+        throw new Error('Błąd podczas usuwania miejsca');
+      }
+
+      setPlaces(places.filter(place => place.id !== placeId));
+    } catch (error) {
+      console.error('Błąd podczas usuwania miejsca:', error);
+    }
+  };
+
   return (
     <>
       <Helmet>
@@ -105,7 +147,13 @@ export default function SearchPage() {
         <Grid container spacing={3}>
           {filteredPlaces.map((place) => (
             <Grid item xs={12} sm={6} md={3} key={place.id}>
-              <SearchItemWidgets place={place} />
+              <SearchItemWidgets
+                place={place}
+                currentUserRole={currentUserRole}
+                headers={headers}
+                places={places}
+                setPlaces={setPlaces}
+              />
             </Grid>
           ))}
         </Grid>
