@@ -1,4 +1,8 @@
 
-*.xml
+
+/.idea
+/node_modules/.bin
+/node_modules/.cache
 /node_modules
+*.xml
 yarn.lock
