@@ -214,16 +214,16 @@ export default function Users() {
             {/* Prawa strona */}
             <Grid>
               <Grid item xs={12}>
-                <TextFieldName onChange={handleNameChange} value={nameValue} />
+                <TextFieldName onChange={handleNameChange} value={nameValue} disabled={!isUpdateMode}/>
               </Grid>
               <Grid item xs={12}>
-                <TextFieldEmail onChange={handleEmailChange} value={emailValue} />
+                <TextFieldEmail onChange={handleEmailChange} value={emailValue} disabled={!isUpdateMode}/>
               </Grid>
               <Grid item xs={12}>
-                <SelectRole onChange={handleRoleChange} value={roleValue} />
+                <SelectRole onChange={handleRoleChange} value={roleValue} disabled={!isUpdateMode}/>
               </Grid>
               <Grid item xs={12}>
-                <SwitchActive onSwitchChange={handleSwitchChange} activeValue={activeValue} />
+                <SwitchActive onSwitchChange={handleSwitchChange} activeValue={activeValue} disabled={!isUpdateMode}/>
               </Grid>
               <Grid item xs={12}>
                 <SetPassword
@@ -231,6 +231,7 @@ export default function Users() {
                   onPasswordsMatchChange={handlePasswordsMatchChange}
                   resetPasswords={resetPasswords}
                   onReset={() => setResetPasswords(false)}
+                  disabled={!isUpdateMode}
                 />
               </Grid>
               <Grid container spacing={2} justifyContent="flex-end">

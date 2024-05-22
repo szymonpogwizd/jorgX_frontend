@@ -193,14 +193,14 @@ export default function Places() {
             {/* Prawa strona */}
             <Grid>
               <Grid item xs={12}>
-                <TextFieldName onChange={handleNameChange} value={nameValue} />
-              </Grid>
-              <Grid item xs={12}>
-                <TextFieldOpenHours onChange={handleOpenHoursChange} value={openHoursValue} />
-              </Grid>
-              <Grid item xs={12}>
-                <TextFieldStreet onChange={handleStreetChange} value={streetValue} />
-              </Grid>
+  <TextFieldName onChange={handleNameChange} value={nameValue} disabled={!isUpdateMode} />
+</Grid>
+<Grid item xs={12}>
+  <TextFieldOpenHours onChange={handleOpenHoursChange} value={openHoursValue} disabled={!isUpdateMode} />
+</Grid>
+<Grid item xs={12}>
+  <TextFieldStreet onChange={handleStreetChange} value={streetValue} disabled={!isUpdateMode} />
+</Grid>
               <Grid container spacing={2} justifyContent="flex-end">
                 <Grid item>
                   <FloatingActionButtonsClean onClick={resetForm} />

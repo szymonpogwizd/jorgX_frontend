@@ -5,7 +5,7 @@ import Switch from "@mui/material/Switch";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 
-export default function SwitchLabels({ onSwitchChange, activeValue }) {
+export default function SwitchLabels({ onSwitchChange, activeValue,disabled }) {
   const [isChecked, setIsChecked] = useState(activeValue);
 
   useEffect(() => {
@@ -22,6 +22,7 @@ export default function SwitchLabels({ onSwitchChange, activeValue }) {
     <FormGroup>
       <Box
         display="flex"
+        disabled={disabled}
         justifyContent="space-between"
         alignItems="center"
         sx={{ width: "100%", marginLeft: 0, marginBottom: 2 }}
