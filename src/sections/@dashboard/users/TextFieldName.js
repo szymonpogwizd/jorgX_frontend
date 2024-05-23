@@ -1,7 +1,7 @@
 import * as React from 'react';
 import TextField from '@mui/material/TextField';
 
-export default function TextFieldName({ onChange, value }) {
+export default function TextFieldName({ onChange, value, disabled }) {
   return (
     <TextField
       id="outlined-basic"
@@ -11,6 +11,7 @@ export default function TextFieldName({ onChange, value }) {
       sx={{ width: "100%", marginBottom: 2 }}
       onChange={onChange}
       value={value}
+      disabled={disabled}
     />
   );
 }

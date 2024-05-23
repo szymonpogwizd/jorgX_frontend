@@ -4,7 +4,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 
-export default function SelectLabels({ onChange, value }) {
+export default function SelectLabels({ onChange, value, disabled }) {
   const [role, setRole] = React.useState('');
   const [data, setData] = useState([]);
 
@@ -32,6 +32,7 @@ export default function SelectLabels({ onChange, value }) {
       <FormControl sx={{ width: "100%", marginBottom: 2 }}>
         <InputLabel id="demo-simple-select-helper-label">Rola</InputLabel>
         <Select
+        disabled={disabled}
           labelId="demo-simple-select-helper-label"
           id="demo-simple-select-helper"
           value={value}

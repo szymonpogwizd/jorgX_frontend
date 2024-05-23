@@ -5,59 +5,79 @@ import { useTheme } from '@mui/material/styles';
 import { Grid, Container, Typography } from '@mui/material';
 // sections
 import {
-  UserList,
+  PlaceList,
   FloatingActionButtonsSave,
   FloatingActionButtonsClean,
   TextFieldName,
-  SelectRole,
-  SwitchActive,
-  TextFieldEmail,
-  SetPassword,
+  TextFieldStreet,
+  TextFieldOpenHours,
   AlertMessage,
-} from '../sections/@dashboard/users';
+} from '../sections/@dashboard/places';
 
-// ----------------------------------------------------------------------   
+// ----------------------------------------------------------------------
 
-export default function Users() {
+export default function Places() {
   const theme = useTheme();
   const [nameValue, setNameValue] = useState("");
-  const [emailValue, setEmailValue] = useState("");
-  const [activeValue, setActiveValue] = useState(true);
-  const [roleValue, setRoleValue] = useState('');
-  const [passwordValue, setPasswordValue] = useState();
-  const [passwordsMatch, setPasswordsMatch] = useState(false);
+  const [cityValue, setCityValue] = useState("");
+  const [streetValue, setStreetValue] = useState("");
+  const [openHoursValue, setOpenHoursValue] = useState("");
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [successAlertMessage, setSuccessAlertMessage] = useState("");
-  const [resetPasswords, setResetPasswords] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
-  const [errorCount, setErrorCount] = useState(0);
   const [idValue, setIdValue] = useState("");
   const [isUpdateMode, setIsUpdateMode] = useState(false);
 
   const resetForm = () => {
     setNameValue("");
-    setEmailValue("");
-    setActiveValue(true);
-    setRoleValue('USER');
-    setResetPasswords(true);
+    setCityValue("");
+    setStreetValue("");
+    setOpenHoursValue("");
     setIdValue("");
     setRefreshKey(prevKey => prevKey + 1);
     setIsUpdateMode(false);
   };
 
-  const handleSaveClick = () => {
+  const checkPlaceExists = async (name, street) => {
+    try {
+      const response = await fetch(`http://localhost:8080/dashboard/place/checkPlaceExists?name=${name}&street=${street}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      const exists = await response.json();
+      return exists;
+    } catch (error) {
+      console.error('Error checking place existence:', error);
+      return false;
+    }
+  };
+
+  const handleSaveClick = async () => {
+    if (!nameValue.trim() || !streetValue.trim() || !openHoursValue.trim()) {
+      setAlertMessage("Wszystkie pola (nazwa miejsca, godziny otwarcia, ulica) muszą być wypełnione.");
+      setShowAlert(true);
+      return;
+    }
+
+    const placeExists = await checkPlaceExists(nameValue, streetValue);
+    if (placeExists) {
+      setAlertMessage(`Miejsce o nazwie ${nameValue} i adresie ${streetValue} już istnieje.`);
+      setShowAlert(true);
+      return;
+    }
 
     const data = {
       name: nameValue,
-      email: emailValue,
-      active: activeValue,
-      userType: roleValue,
-      password: passwordValue,
+      openingHours: openHoursValue,
+      street: streetValue,
     };
 
-    fetch("http://localhost:8080/dashboard/users", {
+    fetch("http://localhost:8080/dashboard/place", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -72,36 +92,45 @@ export default function Users() {
           });
         }
         handleCloseAlert();
-        setSuccessAlertMessage(`Pomyślnie utworzono użytkownika ${nameValue}`);
+        setSuccessAlertMessage(`Pomyślnie utworzono miejsce ${nameValue}`);
         setShowSuccessAlert(true);
         resetForm();
         return response.json();
       })
       .catch((error) => {
         handleCloseSuccessAlert();
-        setErrorCount(prevCount => prevCount + 1);
-        setAlertMessage(`[${errorCount}] ${error.message}`);
+        setAlertMessage(error.message);
         setShowAlert(true);
       });
   };
 
-  const handleUpdateClick = () => {
+  const handleUpdateClick = async () => {
+    if (!nameValue.trim() || !streetValue.trim() || !openHoursValue.trim()) {
+      setAlertMessage("Wszystkie pola (nazwa miejsca, godziny otwarcia, ulica) muszą być wypełnione.");
+      setShowAlert(true);
+      return;
+    }
 
-    const dataUsers = {
+    const placeExists = await checkPlaceExists(nameValue, streetValue);
+    if (placeExists) {
+      setAlertMessage(`Takie miejsce już istnieje.`);
+      setShowAlert(true);
+      return;
+    }
+
+    const dataPlace = {
       name: nameValue,
-      email: emailValue,
-      userType: roleValue,
-      active: activeValue,
-      password: passwordValue,
+      openingHours: openHoursValue,
+      street: streetValue,
     };
 
-    fetch(`http://localhost:8080/dashboard/users/${idValue}`, {
+    fetch(`http://localhost:8080/dashboard/place/up/${idValue}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${localStorage.getItem('token')}`
       },
-      body: JSON.stringify(dataUsers),
+      body: JSON.stringify(dataPlace),
     })
       .then((response) => {
         if (!response.ok) {
@@ -109,7 +138,7 @@ export default function Users() {
             throw new Error(errorText);
           });
         }
-        setSuccessAlertMessage(`Pomyślnie zaktualizowano użytkownika ${nameValue}`);
+        setSuccessAlertMessage(`Pomyślnie zaktualizowano miejsce ${nameValue}`);
         handleCloseAlert();
         setShowSuccessAlert(true);
         resetForm();
@@ -117,36 +146,25 @@ export default function Users() {
       })
       .catch((error) => {
         handleCloseSuccessAlert();
-        setErrorCount(prevCount => prevCount + 1);
-        setAlertMessage(`[${errorCount}] ${error.message}`);
+        setAlertMessage(error.message);
         setShowAlert(true);
       });
   };
 
   const handleNameChange = (event) => {
-    const value = event.target.value;
-    setNameValue(value);
-  }
-
-  const handleEmailChange = (event) => {
-    const value = event.target.value;
-    setEmailValue(value);
-  }
-
-  const handleSwitchChange = (value) => {
-    setActiveValue(value);
+    setNameValue(event.target.value);
   };
 
-  const handleRoleChange = (value) => {
-    setRoleValue(value);
+  const handleOpenHoursChange = (event) => {
+    setOpenHoursValue(event.target.value);
   };
 
-  const handlePasswordChange = (value) => {
-    setPasswordValue(value);
+  const handleCityChange = (event) => {
+    setCityValue(event.target.value);
   };
 
-  const handlePasswordsMatchChange = (value) => {
-    setPasswordsMatch(value);
+  const handleStreetChange = (event) => {
+    setStreetValue(event.target.value);
   };
 
   const handleCloseAlert = () => {
@@ -164,7 +182,7 @@ export default function Users() {
   return (
     <>
       <Helmet>
-        <title> Użytkownicy | JorgX</title>
+        <title> Miejsca | JorgX</title>
       </Helmet>
 
       {showAlert && (
@@ -189,7 +207,7 @@ export default function Users() {
 
       <Container maxWidth="xl">
         <Typography variant="h4" sx={{ mb: 5 }}>
-          Użytkownicy
+          Miejsca
         </Typography>
 
         <Grid container spacing={10}>
@@ -197,14 +215,14 @@ export default function Users() {
             {/* Lewa strona */}
             <Grid>
               <Grid item xs={12}>
-                <UserList
+                <PlaceList
                   refreshKey={refreshKey}
                   setNameValue={setNameValue}
                   setIdValue={setIdValue}
                   setIsUpdateMode={setIsUpdateMode}
-                  setEmailValue={setEmailValue}
-                  setRoleValue={setRoleValue}
-                  setActiveValue={setActiveValue}
+                  setCityValue={setCityValue}
+                  setStreetValue={setStreetValue}
+                  setOpenHoursValue={setOpenHoursValue}
                 />
               </Grid>
             </Grid>
@@ -214,25 +232,13 @@ export default function Users() {
             {/* Prawa strona */}
             <Grid>
               <Grid item xs={12}>
-                <TextFieldName onChange={handleNameChange} value={nameValue} disabled={!isUpdateMode}/>
+                <TextFieldName onChange={handleNameChange} value={nameValue} disabled={!isUpdateMode} />
               </Grid>
               <Grid item xs={12}>
-                <TextFieldEmail onChange={handleEmailChange} value={emailValue} disabled={!isUpdateMode}/>
+                <TextFieldOpenHours onChange={handleOpenHoursChange} value={openHoursValue} disabled={!isUpdateMode} />
               </Grid>
               <Grid item xs={12}>
-                <SelectRole onChange={handleRoleChange} value={roleValue} disabled={!isUpdateMode}/>
-              </Grid>
-              <Grid item xs={12}>
-                <SwitchActive onSwitchChange={handleSwitchChange} activeValue={activeValue} disabled={!isUpdateMode}/>
-              </Grid>
-              <Grid item xs={12}>
-                <SetPassword
-                  onPasswordChange={handlePasswordChange}
-                  onPasswordsMatchChange={handlePasswordsMatchChange}
-                  resetPasswords={resetPasswords}
-                  onReset={() => setResetPasswords(false)}
-                  disabled={!isUpdateMode}
-                />
+                <TextFieldStreet onChange={handleStreetChange} value={streetValue} disabled={!isUpdateMode} />
               </Grid>
               <Grid container spacing={2} justifyContent="flex-end">
                 <Grid item>
@@ -247,7 +253,6 @@ export default function Users() {
             </Grid>
           </Grid>
         </Grid>
-
       </Container>
     </>
   );

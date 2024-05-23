@@ -12,10 +12,11 @@ import Users from './pages/Users';
 import Search from './pages/Search';
 import Place from './pages/Place';
 import OpinionForm from './pages/OpinionForm';
+import Places from './pages/Places';
 import Contact from './pages/Contact'
-
 import ProtectedRoute from './route/ProtectedRoute';
 import AdminRoute from './route/AdminRoute';
+
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -27,6 +28,7 @@ export default function Router() {
         { element: <Navigate to="/dashboard/app" />, index: true },
         { path: 'app', element: <ProtectedRoute><DashboardAppPage /></ProtectedRoute> },
         { path: 'users', element: <AdminRoute><Users /></AdminRoute> },
+        { path: 'places', element: <AdminRoute><Places /></AdminRoute> },
         { path: 'contact', element: <ProtectedRoute><Contact /></ProtectedRoute> },
         { path: 'place', element: <ProtectedRoute><Place /></ProtectedRoute> },
         { path: 'opinionForm', element: <ProtectedRoute><OpinionForm /></ProtectedRoute> },

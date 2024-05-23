@@ -31,6 +31,11 @@ const navConfig = [
     path: '/dashboard/users',
     icon: icon('people_black_24dp'),
   },
+  {
+    title: 'Edytuj Miejsce',
+    path: '/dashboard/Places',
+    icon: icon('edit-place'),
+  },
 ];
 
 export default navConfig;

@@ -7,7 +7,7 @@ import { Icon } from "@iconify/react";
 import eyeFill from "@iconify-icons/eva/eye-fill";
 import eyeOffFill from "@iconify-icons/eva/eye-off-fill";
 
-const PasswordFields = ({ onPasswordChange, onPasswordsMatchChange, resetPasswords, onReset }) => {
+const PasswordFields = ({ onPasswordChange, onPasswordsMatchChange, resetPasswords, onReset, disabled }) => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -44,6 +44,7 @@ const PasswordFields = ({ onPasswordChange, onPasswordsMatchChange, resetPasswor
       </Typography>
 
       <TextField
+      disabled={disabled}
         sx={{ width: "100%", marginBottom: 2, marginTop: 2 }}
         name="password"
         label="Hasło"
@@ -69,6 +70,7 @@ const PasswordFields = ({ onPasswordChange, onPasswordsMatchChange, resetPasswor
         onChange={handleConfirmPasswordChange}
         error={!isPasswordsMatch}
         fullWidth
+        disabled={disabled}
       />
     </div>
   );

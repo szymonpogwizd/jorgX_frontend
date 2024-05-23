@@ -5,7 +5,7 @@ export default function TextFieldName({ onChange, value, disabled }) {
   return (
     <TextField
       id="outlined-basic"
-      label="Email"
+      label="Nazwa"
       variant="outlined"
       fullWidth
       sx={{ width: "100%", marginBottom: 2 }}
