@@ -58,6 +58,12 @@ export default function Places() {
   };
 
   const handleSaveClick = async () => {
+    if (!nameValue.trim()) {
+      setAlertMessage("Nazwa miejsca nie może być pusta.");
+      setShowAlert(true);
+      return;
+    }
+
     const placeExists = await checkPlaceExists(nameValue, streetValue);
     if (placeExists) {
       setAlertMessage(`Miejsce o nazwie ${nameValue} i adresie ${streetValue} już istnieje.`);
@@ -99,6 +105,12 @@ export default function Places() {
   };
 
   const handleUpdateClick = async () => {
+    if (!nameValue.trim()) {
+      setAlertMessage("Nazwa miejsca nie może być pusta.");
+      setShowAlert(true);
+      return;
+    }
+
     const placeExists = await checkPlaceExists(nameValue, streetValue);
     if (placeExists) {
       setAlertMessage(`Takie miejsce już istnieje.`);

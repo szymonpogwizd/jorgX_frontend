@@ -28,7 +28,6 @@ export default function PlaceList({ refreshKey, setNameValue, setIdValue, setIsU
                 setData(data);
             });
     }, [refreshKey]);
-    
 
     useEffect(() => {
         if (itemToDelete !== null) {
@@ -70,7 +69,6 @@ export default function PlaceList({ refreshKey, setNameValue, setIdValue, setIsU
           setShowAlert(true);
       });
   };
-  
 
     const handleCloseAlert = () => {
         setShowAlert(false);
@@ -87,12 +85,17 @@ export default function PlaceList({ refreshKey, setNameValue, setIdValue, setIsU
     const handleToggle = (id) => () => {
         const item = data.find((item) => item.id === id);
         if (item) {
+          if (!item.name.trim()) {
+            setAlertMessage("Nazwa miejsca nie może być pusta.");
+            setShowAlert(true);
+            return;
+          }
           setIdValue(item.id);
           setNameValue(item.name);
           setStreetValue(item.street);
           setOpenHoursValue(item.openingHours);
           setIsUpdateMode(true);
-      
+
           // Wywołanie API do pobrania id miasta
           fetch(`http://localhost:8080/dashboard/place/city/${id}`, {
             headers
@@ -114,10 +117,6 @@ export default function PlaceList({ refreshKey, setNameValue, setIdValue, setIsU
             });
         }
       };
-      
-      
-    
-    
 
     const handleSearch = (newSearchText) => {
         setSearchText(newSearchText);
