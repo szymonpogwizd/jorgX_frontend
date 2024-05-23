@@ -58,8 +58,8 @@ export default function Places() {
   };
 
   const handleSaveClick = async () => {
-    if (!nameValue.trim()) {
-      setAlertMessage("Nazwa miejsca nie może być pusta.");
+    if (!nameValue.trim() || !streetValue.trim() || !openHoursValue.trim()) {
+      setAlertMessage("Wszystkie pola (nazwa miejsca, godziny otwarcia, ulica) muszą być wypełnione.");
       setShowAlert(true);
       return;
     }
@@ -105,8 +105,8 @@ export default function Places() {
   };
 
   const handleUpdateClick = async () => {
-    if (!nameValue.trim()) {
-      setAlertMessage("Nazwa miejsca nie może być pusta.");
+    if (!nameValue.trim() || !streetValue.trim() || !openHoursValue.trim()) {
+      setAlertMessage("Wszystkie pola (nazwa miejsca, godziny otwarcia, ulica) muszą być wypełnione.");
       setShowAlert(true);
       return;
     }

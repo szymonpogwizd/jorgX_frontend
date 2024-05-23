@@ -95,21 +95,18 @@ export default function PlaceList({ refreshKey, setNameValue, setIdValue, setIsU
           setStreetValue(item.street);
           setOpenHoursValue(item.openingHours);
           setIsUpdateMode(true);
-
-          // Wywołanie API do pobrania id miasta
+          
           fetch(`http://localhost:8080/dashboard/place/city/${id}`, {
             headers
           })
             .then((response) => response.json())
             .then((cityIdData) => {
-              // Wywołanie API do pobrania nazwy miasta na podstawie id
               return fetch(`http://localhost:8080/dashboard/city/${cityIdData}`, {
                 headers
               });
             })
             .then((response) => response.json())
             .then((cityData) => {
-              // Ustawiamy wartość miasta na nazwę miasta zwróconą przez API
               setCityValue(cityData.name);
             })
             .catch((error) => {
