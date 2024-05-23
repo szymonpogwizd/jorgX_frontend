@@ -40,7 +40,30 @@ export default function Places() {
     setIsUpdateMode(false);
   };
 
-  const handleSaveClick = () => {
+  const checkPlaceExists = async (name, street) => {
+    try {
+      const response = await fetch(`http://localhost:8080/dashboard/place/checkPlaceExists?name=${name}&street=${street}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      const exists = await response.json();
+      return exists;
+    } catch (error) {
+      console.error('Error checking place existence:', error);
+      return false;
+    }
+  };
+
+  const handleSaveClick = async () => {
+    const placeExists = await checkPlaceExists(nameValue, streetValue);
+    if (placeExists) {
+      setAlertMessage(`Miejsce o nazwie ${nameValue} i adresie ${streetValue} już istnieje.`);
+      setShowAlert(true);
+      return;
+    }
 
     const data = {
       name: nameValue,
@@ -75,7 +98,13 @@ export default function Places() {
       });
   };
 
-  const handleUpdateClick = () => {
+  const handleUpdateClick = async () => {
+    const placeExists = await checkPlaceExists(nameValue, streetValue);
+    if (placeExists) {
+      setAlertMessage(`Takie miejsce już istnieje.`);
+      setShowAlert(true);
+      return;
+    }
 
     const dataPlace = {
       name: nameValue,
@@ -114,7 +143,6 @@ export default function Places() {
     setNameValue(event.target.value);
   };
 
-
   const handleOpenHoursChange = (event) => {
     setOpenHoursValue(event.target.value);
   };
@@ -126,7 +154,6 @@ export default function Places() {
   const handleStreetChange = (event) => {
     setStreetValue(event.target.value);
   };
-
 
   const handleCloseAlert = () => {
     setShowAlert(false);
@@ -149,7 +176,7 @@ export default function Places() {
       {showAlert && (
         <AlertMessage
           severity="error"
-          title="Błądt"
+          title="Błąd"
           message={alertMessage}
           onClose={handleCloseAlert}
           resetAlert={resetAlert}
@@ -193,14 +220,14 @@ export default function Places() {
             {/* Prawa strona */}
             <Grid>
               <Grid item xs={12}>
-  <TextFieldName onChange={handleNameChange} value={nameValue} disabled={!isUpdateMode} />
-</Grid>
-<Grid item xs={12}>
-  <TextFieldOpenHours onChange={handleOpenHoursChange} value={openHoursValue} disabled={!isUpdateMode} />
-</Grid>
-<Grid item xs={12}>
-  <TextFieldStreet onChange={handleStreetChange} value={streetValue} disabled={!isUpdateMode} />
-</Grid>
+                <TextFieldName onChange={handleNameChange} value={nameValue} disabled={!isUpdateMode} />
+              </Grid>
+              <Grid item xs={12}>
+                <TextFieldOpenHours onChange={handleOpenHoursChange} value={openHoursValue} disabled={!isUpdateMode} />
+              </Grid>
+              <Grid item xs={12}>
+                <TextFieldStreet onChange={handleStreetChange} value={streetValue} disabled={!isUpdateMode} />
+              </Grid>
               <Grid container spacing={2} justifyContent="flex-end">
                 <Grid item>
                   <FloatingActionButtonsClean onClick={resetForm} />
@@ -214,7 +241,6 @@ export default function Places() {
             </Grid>
           </Grid>
         </Grid>
-
       </Container>
     </>
   );
