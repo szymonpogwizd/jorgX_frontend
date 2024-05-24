@@ -1,9 +1,10 @@
 // component
 import SvgColor from '../../../components/svg-color';
-
 // ----------------------------------------------------------------------
 
 const icon = (name) => <SvgColor src={`/assets/icons/navbar/${name}.svg`} sx={{ width: 1, height: 1 }} />;
+
+const userRole = localStorage.getItem('userType');
 
 const navConfig = [
   {
@@ -26,20 +27,22 @@ const navConfig = [
     path: '/dashboard/contact',
     icon: icon('contact'),
   },
-  {
-    title: 'Użytkownicy',
-    path: '/dashboard/users',
-    icon: icon('people_black_24dp'),
-  },
-  {
-    title: 'Edytuj Miejsce',
-    path: '/dashboard/Places',
-    icon: icon('edit-place'),
-  },
+  ...(userRole === 'ADMINISTRATOR' ? [
+    {
+      title: 'Użytkownicy',
+      path: '/dashboard/users',
+      icon: icon('people_black_24dp'),
+    },
+    {
+      title: userRole,
+      path: '/dashboard/Places',
+      icon: icon('edit-place'),
+    },
+  ] : []),
 ];
 
-export default navConfig;
 
+export default navConfig;
 
 
 
