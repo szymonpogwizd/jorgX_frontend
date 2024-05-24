@@ -37,38 +37,38 @@ export default function PlaceList({ refreshKey, setNameValue, setIdValue, setIsU
     }, [itemToDelete]);
 
     const handleDelete = (id) => () => {
-      fetch(`http://localhost:8080/dashboard/opinion/place/${id}`, {
-          method: 'DELETE',
-          headers
-      })
-      .then(response => {
-          if (!response.ok) {
-              throw new Error('Failed to delete opinions');
-          }
-          return fetch(`http://localhost:8080/dashboard/place/${id}`, {
-              method: 'DELETE',
-              headers
-          });
-      })
-      .then(response => {
-          if (response.ok) {
-              setItemToDelete(id);
-              setSuccessAlertMessage(`Pomyślnie usunięto miejsce`);
-              setShowSuccessAlert(true);
-          } else if (response.status === 417) {
-              response.text().then((errorMessage) => {
-                  setAlertMessage(errorMessage);
-                  setShowAlert(true);
-              });
-          } else {
-              throw new Error('Wystąpił błąd');
-          }
-      })
-      .catch((error) => {
-          setAlertMessage(error.message);
-          setShowAlert(true);
-      });
-  };
+        fetch(`http://localhost:8080/dashboard/opinion/place/${id}`, {
+            method: 'DELETE',
+            headers
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to delete opinions');
+                }
+                return fetch(`http://localhost:8080/dashboard/place/${id}`, {
+                    method: 'DELETE',
+                    headers
+                });
+            })
+            .then(response => {
+                if (response.ok) {
+                    setItemToDelete(id);
+                    setSuccessAlertMessage(`Pomyślnie usunięto miejsce`);
+                    setShowSuccessAlert(true);
+                } else if (response.status === 417) {
+                    response.text().then((errorMessage) => {
+                        setAlertMessage(errorMessage);
+                        setShowAlert(true);
+                    });
+                } else {
+                    throw new Error('Wystąpił błąd');
+                }
+            })
+            .catch((error) => {
+                setAlertMessage(error.message);
+                setShowAlert(true);
+            });
+    };
 
     const handleCloseAlert = () => {
         setShowAlert(false);
@@ -85,35 +85,35 @@ export default function PlaceList({ refreshKey, setNameValue, setIdValue, setIsU
     const handleToggle = (id) => () => {
         const item = data.find((item) => item.id === id);
         if (item) {
-          if (!item.name.trim()) {
-            setAlertMessage("Nazwa miejsca nie może być pusta.");
-            setShowAlert(true);
-            return;
-          }
-          setIdValue(item.id);
-          setNameValue(item.name);
-          setStreetValue(item.street);
-          setOpenHoursValue(item.openingHours);
-          setIsUpdateMode(true);
-          
-          fetch(`http://localhost:8080/dashboard/place/city/${id}`, {
-            headers
-          })
-            .then((response) => response.json())
-            .then((cityIdData) => {
-              return fetch(`http://localhost:8080/dashboard/city/${cityIdData}`, {
+            if (!item.name.trim()) {
+                setAlertMessage("Nazwa miejsca nie może być pusta.");
+                setShowAlert(true);
+                return;
+            }
+            setIdValue(item.id);
+            setNameValue(item.name);
+            setStreetValue(item.street);
+            setOpenHoursValue(item.openingHours);
+            setIsUpdateMode(true);
+
+            fetch(`http://localhost:8080/dashboard/place/city/${id}`, {
                 headers
-              });
             })
-            .then((response) => response.json())
-            .then((cityData) => {
-              setCityValue(cityData.name);
-            })
-            .catch((error) => {
-              console.error('Error:', error);
-            });
+                .then((response) => response.json())
+                .then((cityIdData) => {
+                    return fetch(`http://localhost:8080/dashboard/city/${cityIdData}`, {
+                        headers
+                    });
+                })
+                .then((response) => response.json())
+                .then((cityData) => {
+                    setCityValue(cityData.name);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
         }
-      };
+    };
 
     const handleSearch = (newSearchText) => {
         setSearchText(newSearchText);

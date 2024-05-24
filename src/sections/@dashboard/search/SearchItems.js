@@ -73,57 +73,57 @@ export default function SearchItemWidgets({ place, sx, showButton, currentUserRo
     }
   };
 
-return (
-  <Card
-    sx={{
-      py: 5,
-      boxShadow: 0,
-      textAlign: 'center',
-      color: (theme) => theme.palette[color].darker,
-      bgcolor: (theme) => theme.palette[color].lighter,
-      ...sx,
-    }}
-  >
-    <Typography variant="h3" sx={{ mb: 2 }}>{place.name}</Typography>
-    <StyledIcon
+  return (
+    <Card
       sx={{
-        color: (theme) => theme.palette[color].dark,
-        backgroundImage: (theme) =>
-          `linear-gradient(135deg, ${alpha(theme.palette[color].dark, 0)} 0%, ${alpha(
-            theme.palette[color].dark,
-            0.24
-          )} 100%)`,
+        py: 5,
+        boxShadow: 0,
+        textAlign: 'center',
+        color: (theme) => theme.palette[color].darker,
+        bgcolor: (theme) => theme.palette[color].lighter,
+        ...sx,
       }}
     >
-      <Iconify icon={icon} width={48} height={48} />
-    </StyledIcon>
-
-    <Typography variant="subtitle1" sx={{ opacity: 0.72, mb: 1 }}>
-      Średnia ocena: <b>{place.rating || 'brak opinii'}</b>
-    </Typography>
-    <Typography variant="subtitle1" sx={{ opacity: 0.72, mb: 1 }}>Miasto: <b>{place.city.name}</b></Typography>
-    <Typography variant="subtitle1" sx={{ opacity: 0.72, mb: 1 }}>Ulica: <b>{place.street}</b></Typography>
-    <Typography variant="subtitle1" sx={{ opacity: 0.72, mb: 2 }}>Godziny otwarcia: <b>{place.openingHours}</b></Typography>
-{showButton && (
-  <div>
-    <Button variant="contained" onClick={handleViewReviewsClick} sx={{ mb: 2 }}>
-      Zobacz opinie
-    </Button>
-    {currentUserRole === 'ADMINISTRATOR' && (
-      <Button
-        variant="contained"
-        color="secondary"
-        onClick={() => handleDeletePlace(place.id)}
-        sx={{ mb: 2, display: 'block', margin: '0 auto' }} // Ustawiamy margines na 'auto' aby wyśrodkować przycisk w poziomie
+      <Typography variant="h3" sx={{ mb: 2 }}>{place.name}</Typography>
+      <StyledIcon
+        sx={{
+          color: (theme) => theme.palette[color].dark,
+          backgroundImage: (theme) =>
+            `linear-gradient(135deg, ${alpha(theme.palette[color].dark, 0)} 0%, ${alpha(
+              theme.palette[color].dark,
+              0.24
+            )} 100%)`,
+        }}
       >
-        Usuń
-      </Button>
-    )}
-  </div>
-)}
+        <Iconify icon={icon} width={48} height={48} />
+      </StyledIcon>
 
-  </Card>
-);
+      <Typography variant="subtitle1" sx={{ opacity: 0.72, mb: 1 }}>
+        Średnia ocena: <b>{place.rating || 'brak opinii'}</b>
+      </Typography>
+      <Typography variant="subtitle1" sx={{ opacity: 0.72, mb: 1 }}>Miasto: <b>{place.city.name}</b></Typography>
+      <Typography variant="subtitle1" sx={{ opacity: 0.72, mb: 1 }}>Ulica: <b>{place.street}</b></Typography>
+      <Typography variant="subtitle1" sx={{ opacity: 0.72, mb: 2 }}>Godziny otwarcia: <b>{place.openingHours}</b></Typography>
+      {showButton && (
+        <div>
+          <Button variant="contained" onClick={handleViewReviewsClick} sx={{ mb: 2 }}>
+            Zobacz opinie
+          </Button>
+          {currentUserRole === 'ADMINISTRATOR' && (
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={() => handleDeletePlace(place.id)}
+              sx={{ mb: 2, display: 'block', margin: '0 auto' }} // Ustawiamy margines na 'auto' aby wyśrodkować przycisk w poziomie
+            >
+              Usuń
+            </Button>
+          )}
+        </div>
+      )}
+
+    </Card>
+  );
 }
 
 SearchItemWidgets.propTypes = {

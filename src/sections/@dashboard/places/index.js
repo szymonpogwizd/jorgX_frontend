@@ -5,5 +5,5 @@ export { default as AlertMessage } from '../common/AlertMessage';
 export { default as TextFieldName } from './TextFieldName';
 
 export { default as TextFieldStreet } from './TextFieldStreet';
-export { default as TextFieldOpenHours} from './TextFieldOpenHours';
+export { default as TextFieldOpenHours } from './TextFieldOpenHours';
 export { default as FloatingActionButtonsClean } from '../common/FloatingActionButtonsClean';

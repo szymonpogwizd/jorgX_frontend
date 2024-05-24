@@ -214,16 +214,16 @@ export default function Users() {
             {/* Prawa strona */}
             <Grid>
               <Grid item xs={12}>
-                <TextFieldName onChange={handleNameChange} value={nameValue} disabled={!isUpdateMode}/>
+                <TextFieldName onChange={handleNameChange} value={nameValue} disabled={!isUpdateMode} />
               </Grid>
               <Grid item xs={12}>
-                <TextFieldEmail onChange={handleEmailChange} value={emailValue} disabled={!isUpdateMode}/>
+                <TextFieldEmail onChange={handleEmailChange} value={emailValue} disabled={!isUpdateMode} />
               </Grid>
               <Grid item xs={12}>
-                <SelectRole onChange={handleRoleChange} value={roleValue} disabled={!isUpdateMode}/>
+                <SelectRole onChange={handleRoleChange} value={roleValue} disabled={!isUpdateMode} />
               </Grid>
               <Grid item xs={12}>
-                <SwitchActive onSwitchChange={handleSwitchChange} activeValue={activeValue} disabled={!isUpdateMode}/>
+                <SwitchActive onSwitchChange={handleSwitchChange} activeValue={activeValue} disabled={!isUpdateMode} />
               </Grid>
               <Grid item xs={12}>
                 <SetPassword

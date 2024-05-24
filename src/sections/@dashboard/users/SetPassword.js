@@ -44,7 +44,7 @@ const PasswordFields = ({ onPasswordChange, onPasswordsMatchChange, resetPasswor
       </Typography>
 
       <TextField
-      disabled={disabled}
+        disabled={disabled}
         sx={{ width: "100%", marginBottom: 2, marginTop: 2 }}
         name="password"
         label="Hasło"

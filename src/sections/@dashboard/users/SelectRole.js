@@ -32,7 +32,7 @@ export default function SelectLabels({ onChange, value, disabled }) {
       <FormControl sx={{ width: "100%", marginBottom: 2 }}>
         <InputLabel id="demo-simple-select-helper-label">Rola</InputLabel>
         <Select
-        disabled={disabled}
+          disabled={disabled}
           labelId="demo-simple-select-helper-label"
           id="demo-simple-select-helper"
           value={value}
