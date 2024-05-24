@@ -36,9 +36,9 @@ export default function DashboardLayout() {
   const [open, setOpen] = useState(false);
   const token = localStorage.getItem('token');
 
-    if (!token) {
-        return <Navigate to="/login" replace />;
-    }
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
 
   return (
     <StyledRoot>

@@ -79,73 +79,73 @@ export default function Contact() {
       }
 
       fetch(`http://localhost:8080/dashboard/place/checkPlaceExists?name=${encodeURIComponent(placeName)}&street=${encodeURIComponent(placeStreet)}`, {
-  method: 'GET',
-  headers: {
-    'Content-Type': 'application/json',
-    'Authorization': headers.Authorization
-  }
-})
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return response.json();
-  })
-  .then(exists => {
-    if (exists) {
-      setAlertCount(prevCount => prevCount + 1);
-      setAlertMessage(`[${alertCount}] Miejsce o tej nazwie i adresie już istnieje!`);
-      setShowAlert(true);
-      return;
-    }
-
-
-      const newPlaceData = {
-        opinion: {
-          opinion: newOpinion,
-          email: localStorage.getItem('email')
-        },
-        city: {
-          name: cityName
-        },
-        place: {
-          name: placeName,
-          street: placeStreet,
-          openingHours: placeOpeningHours,
-          cityId: null
-        }
-      };
-      console.log(newPlaceData);
-      fetch('http://localhost:8080/dashboard/general', {
-        method: 'POST',
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': headers.Authorization
-        },
-        body: JSON.stringify(newPlaceData)
+        }
       })
-        .then(handleResponse)
-        .then(data => {
-          setPlaceName('');
-          setNewOpinion('');
-          setPlaceStreet('');
-          setCityName('');
-          setOpeningHours('');
-          setAlertCount(prevCount => prevCount + 1);
-          handleCloseAlert();
-          setSuccessAlertMessage(`[${alertCount}] Opinia została pomyślnie wysłana.`);
-          setShowSuccessAlert(true);
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(exists => {
+          if (exists) {
+            setAlertCount(prevCount => prevCount + 1);
+            setAlertMessage(`[${alertCount}] Miejsce o tej nazwie i adresie już istnieje!`);
+            setShowAlert(true);
+            return;
+          }
+
+
+          const newPlaceData = {
+            opinion: {
+              opinion: newOpinion,
+              email: localStorage.getItem('email')
+            },
+            city: {
+              name: cityName
+            },
+            place: {
+              name: placeName,
+              street: placeStreet,
+              openingHours: placeOpeningHours,
+              cityId: null
+            }
+          };
+          console.log(newPlaceData);
+          fetch('http://localhost:8080/dashboard/general', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': headers.Authorization
+            },
+            body: JSON.stringify(newPlaceData)
+          })
+            .then(handleResponse)
+            .then(data => {
+              setPlaceName('');
+              setNewOpinion('');
+              setPlaceStreet('');
+              setCityName('');
+              setOpeningHours('');
+              setAlertCount(prevCount => prevCount + 1);
+              handleCloseAlert();
+              setSuccessAlertMessage(`[${alertCount}] Opinia została pomyślnie wysłana.`);
+              setShowSuccessAlert(true);
+            })
+            .catch(error => {
+              setAlertCount(prevCount => prevCount + 1);
+              setAlertMessage(`[${alertCount}] ${error.message}`);
+              setShowAlert(true);
+            });
         })
         .catch(error => {
-          setAlertCount(prevCount => prevCount + 1);
-          setAlertMessage(`[${alertCount}] ${error.message}`);
-          setShowAlert(true);
+          console.error('Wystąpił błąd podczas sprawdzania miejsca', error);
         });
-    })
-    .catch(error=> {
-      console.error('Wystąpił błąd podczas sprawdzania miejsca', error);
-    });
-  }else {
+    } else {
 
       if (!newOpinion.trim()) {
         setAlertCount(prevCount => prevCount + 1);
